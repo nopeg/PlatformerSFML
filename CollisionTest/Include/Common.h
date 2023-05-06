@@ -53,7 +53,7 @@ inline std::vector<int> sortArrayB(std::vector<int> a, int arrayLength)
 			}
 		}
 	}
-	return arr;
+	return a;
 }
 inline std::vector<double> sortArrayB(std::vector<double> a, int arrayLength)
 {
@@ -70,7 +70,7 @@ inline std::vector<double> sortArrayB(std::vector<double> a, int arrayLength)
 			}
 		}
 	}
-	return arr;
+	return a;
 }
 
 
