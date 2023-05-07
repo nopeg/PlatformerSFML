@@ -3,20 +3,18 @@
 #include <iostream>
 
 #include "Common.h"
+#include "BoxShape.h"
 using namespace sf;
 
-static std::vector<RectangleShape> boxV;
-void createBox(Vector2f pos, Vector2f bounds, float outWidth, Color colorFill, Color colorOut)
+static std::vector<BoxShape> boxV;
+void createBox(Vector2f pos, Vector2f size, Color colorFill)
 {
-    RectangleShape box(bounds);
+    BoxShape box(size);
 
-    box.setOrigin(bounds.x / 2, bounds.y / 2);
-    box.setSize(bounds);
-    box.setFillColor(colorFill);
+    box.setOrigin(Vector2f(size.x / 2, size.y / 2));
+    box.setSize(size);
     box.setPosition(pos);
-    box.setOutlineThickness(outWidth);
-    box.setOutlineColor(colorOut);
-
+    box.setColor(colorFill);
     boxV.push_back(box);
 }
 
@@ -30,9 +28,7 @@ int main()
     View view(FloatRect(0.f, 0.f, 320.f, 320.f));
     Event event;
 
-    createBox(Vector2f(32, 32), Vector2f(32, 32), 2, Color(0,0,0,0), Color(255, 255, 255));
-    createBox(Vector2f(128, 128), Vector2f(32, 32), 2, Color(0, 0, 0, 0), Color(255, 255, 255));
-    createBox(Vector2f(256, 256), Vector2f(32, 32), 2, Color(0, 0, 0, 0), Color(255, 255, 255));
+    createBox(Vector2f(0, 0), Vector2f(32, 32), Color(255, 0, 0));
 
     Vector2f mousePos(0, 0);
     int grab = -1;
