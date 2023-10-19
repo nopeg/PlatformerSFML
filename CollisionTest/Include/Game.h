@@ -9,7 +9,7 @@ class Game : public Scene
 private:
 	RectangleShape background;
 
-	std::vector<FloatRect> uniGrid;
+	std::vector<std::vector<int>> uniGrid;
 	float cellSize = 128.0f;
 	unsigned int height = 8;
 	unsigned int width = 8;
@@ -37,8 +37,7 @@ public:
 		{
 			for (int j = 0; j < width; j++)
 			{
-				FloatRect fr(j * cellSize, i * cellSize, cellSize, cellSize);
-				uniGrid.push_back(fr);
+				uniGrid.push_back({ i,j });
 			}
 		}
 	}
@@ -55,12 +54,14 @@ public:
 			goToScene(menu);
 			exitScene();
 		}
-
-		for (int i = 0; i < height * width; i++)
+		if (gameEvent->type == sf::Event::MouseButtonPressed)
 		{
-			if (uniGrid[i].intersects(player.shape.getGlobalBounds()))
+			if (int(player.shape.getGlobalBounds().top / cellSize) < height && player.shape.getGlobalBounds().top >= 0)
 			{
-				print(i);
+				if (int(player.shape.getGlobalBounds().left / cellSize) < width && player.shape.getGlobalBounds().left >= 0)
+				{
+					print(uniGrid[int(player.shape.getGlobalBounds().left / cellSize)][int(player.shape.getGlobalBounds().top / cellSize)]);
+				}
 			}
 		}
 	}

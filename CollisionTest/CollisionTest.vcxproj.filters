@@ -33,7 +33,7 @@
     <ClCompile Include="Include\Common.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UniformGrid.cpp">
+    <ClCompile Include="Source\Collision.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +68,7 @@
     <ClInclude Include="Include\NewShapes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Include\UniformGrid.h">
+    <ClInclude Include="Include\Collision.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
