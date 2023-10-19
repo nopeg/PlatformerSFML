@@ -1,19 +1,17 @@
 #include "Common.h"
 #include "Camera.h"
 
-Camera::Camera() {}
-Camera::~Camera() {}
-
 void Camera::set(RenderWindow* window, Vector2f pos)
 {
 	viewZoom = 1;
 	mainView.zoom(1);
-	mainView.setSize
-	({ 
+	mainView.setSize({ 
 		static_cast<float>(window->getSize().x), 
-		static_cast<float>(window->getSize().y) 
-	});
+		static_cast<float>(window->getSize().y) });
+
 	shape.setRadius(4);
+	shape.setOrigin({ shape.getRadius(), shape.getRadius() });
+	shape.setFillColor(Color::Green);
 	shape.setPosition(pos);
 }
 

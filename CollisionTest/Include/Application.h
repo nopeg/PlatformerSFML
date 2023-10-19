@@ -10,7 +10,7 @@ class Application
 private:
 	RenderWindow* window;
 	Event* gameEvent;
-	Camera* cam;
+	Camera cam;
 	Clock dtClock;
 	float dt;
 

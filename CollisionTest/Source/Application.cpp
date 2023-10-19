@@ -23,7 +23,6 @@ void Application::startWindow()
     window->setFramerateLimit(fLimit);
     window->setVerticalSyncEnabled(vSync);
     gameEvent = new Event;
-    cam = new Camera;
 }
 
 void Application::startScenes()
@@ -44,7 +43,6 @@ Application::~Application()
 {
     delete window;
     delete gameEvent;
-    delete cam;
 
     while (!SceneStack.empty())
     {
@@ -123,7 +121,7 @@ void Application::updateEvent()
             window->close();
         }
 
-        cam->updateEvent(gameEvent);
+        cam.updateEvent(gameEvent);
     }
 }
 

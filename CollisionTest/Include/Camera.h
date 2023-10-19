@@ -16,9 +16,6 @@ public:
 	View mainView;
 	CircleShape shape;
 
-	Camera();
-	~Camera();
-
 	void set(RenderWindow* window, Vector2f pos);
 	void update(Vector2f pos, Vector2f prevPos);
 	void updateWindow(RenderWindow* window);

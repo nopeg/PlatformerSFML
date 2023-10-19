@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\UniformGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Application.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Include\Player.h" />
     <ClInclude Include="Include\Scene.h" />
     <ClInclude Include="Include\TitleScreen.h" />
+    <ClInclude Include="Include\UniformGrid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
