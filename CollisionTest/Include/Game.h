@@ -3,30 +3,29 @@
 
 #include "Scene.h"
 #include "Player.h"
+#include "UniformGrid.h"
 
 class Game : public Scene
 {
 private:
 	RectangleShape background;
 
+	Player player;
+
 	std::vector<std::vector<int>> uniGrid;
-	float cellSize = 128.0f;
+	float cellSize = 64.0f;
 	unsigned int height = 8;
 	unsigned int width = 8;
 
 public:
-	Player player;
 
 	Game(std::stack<Scene*>* Scenes, RenderWindow* window, Event *gameEvent, Camera cam)
 		: Scene(Scenes, window, gameEvent, cam)
 	{
 		print("entered game");
 
-		player.set(Vector2f(16, 32), Vector2f(16, 16));
-		player.shape.getGlobalBounds();
-
 		this->cam.canZoom = true;
-		this->cam.set(window, player.shape.getPosition());
+		this->cam.set(window, { 0, 0 });
 
 		background.setPosition({ 0, 0 });
 		background.setFillColor(Color(100, 100, 100));
@@ -40,6 +39,8 @@ public:
 				uniGrid.push_back({ i,j });
 			}
 		}
+
+		player.set({ 32,32 }, { 0,0 });
 	}
 
 	~Game()
@@ -56,30 +57,23 @@ public:
 		}
 		if (gameEvent->type == sf::Event::MouseButtonPressed)
 		{
-			if (int(player.shape.getGlobalBounds().top / cellSize) < height && player.shape.getGlobalBounds().top >= 0)
-			{
-				if (int(player.shape.getGlobalBounds().left / cellSize) < width && player.shape.getGlobalBounds().left >= 0)
-				{
-					print(uniGrid[int(player.shape.getGlobalBounds().left / cellSize)][int(player.shape.getGlobalBounds().top / cellSize)]);
-				}
-			}
+
 		}
 	}
 
 	void update(const float& dt)
 	{
-		Vector2f prevPlayerPos = player.shape.getPosition();
 		updateKeybinds(dt);
 		updateMousePosition();
 
 		if (Keyboard::isKeyPressed(Keyboard::Enter))
 		{
-			print("yep");
+			print(clamp<int>(int(mousePosView.y / cellSize), 0, height - 1) << clamp<int>(int(mousePosView.x / cellSize), 0, width - 1));
+			//print(uniGrid[clamp<int>(int(mousePosView.y / cellSize), 0, height - 1)][clamp<int>(int(mousePosView.x / cellSize), 0, width - 1)]);
 		}
-
 		player.update(dt);
 
-		cam.update(player.shape.getPosition(), prevPlayerPos);
+		cam.update({ 0,0 }, { 0,0 });
 		cam.updateWindow(window);
 		cam.updateEvent(gameEvent);
 		window->setView(cam.mainView);
@@ -91,8 +85,8 @@ public:
 			target = this->window;
 
 		target->draw(background);
-		target->draw(player.shape);
 		target->draw(cam.shape);
+		target->draw(player.shape);
 	}
 };
 

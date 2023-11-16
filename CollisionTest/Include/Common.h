@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <stack>
-#include <map>
 #include <random>
 #include <fstream>
 #include <sstream>
@@ -41,6 +40,12 @@ inline float convertMinMax(float min1, float max1, float min2, float max2, float
 inline float lerp(float a, float b, float fraction)
 {
 	return (a * (1.0 - fraction)) + (b * fraction);
+}
+
+//clamping between min and max
+template <typename T>
+T clamp(const T& n, const T& lower, const T& upper) {
+	return std::max(lower, std::min(n, upper));
 }
 
 //returns sorted vector

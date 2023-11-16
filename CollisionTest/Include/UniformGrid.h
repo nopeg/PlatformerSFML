@@ -1,5 +1,7 @@
-#pragma once
-class Collider
+#ifndef COLLISION_H
+#define COLLISION_H
+
+/*class Collider
 {
 	std::vector<UniformCell*> currentCells;
 	void getLocalObjects()
@@ -30,4 +32,6 @@ class UniformGrid
 	{
 		return uniGrid[int(position.x / cellSize)][int(position.y / cellSize)];
 	}
-};
+};*/
+
+#endif
