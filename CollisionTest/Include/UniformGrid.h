@@ -1,37 +1,28 @@
-#ifndef COLLISION_H
-#define COLLISION_H
+#ifndef UGRID_H
+#define UGRID_H
 
-/*class Collider
-{
-	std::vector<UniformCell*> currentCells;
-	void getLocalObjects()
-	{
-		for (int i = 0; i < currentCells.size(); i++)
-		{
-			for (int j = 0; j < currentCells[i]->objects.size(); j++)
-			{
+#include <SFML/Graphics.hpp>
 
-			}
-		}
-	}
-};
-class UniformCell
+class Entity;
+
+class UniGrid
 {
+private:
+	std::vector<std::vector<std::vector<Entity*>>> grid;
+
 public:
-	std::vector<Collider*> objects;
-	void add(Collider* object);
-	void del(Collider* object);
+	float cellSize = 32.0f * 16;
+	unsigned int height = 10;
+	unsigned int width = 10;
+
+	void createGrid();
+	Vector2i getCell(const Vector2f& coords);
+	std::vector<Vector2i> getCells(const std::vector<Vector2f>& points);
+	std::vector<Entity*> getBodies(const Vector2f& coords);
+	int contains(const Vector2i& coords, Entity* body);
+
+	void add(const Vector2f& coords, Entity* body);
+	void remove(const Vector2i& coords, Entity* body);
 };
-class UniformGrid
-{
-	float cellSize = 128.0f;
-	unsigned int height = 8;
-	unsigned int width = 8;
-	std::vector<std::vector<UniformCell*>> uniGrid;
-	UniformCell* getCell(Vector2f position)
-	{
-		return uniGrid[int(position.x / cellSize)][int(position.y / cellSize)];
-	}
-};*/
 
 #endif

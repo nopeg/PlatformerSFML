@@ -15,6 +15,7 @@
 
 using namespace sf;
 
+#define gravity 9.8
 #define PI 3.1415926
 #define print(x) std::cout << x << std::endl;
 
@@ -42,6 +43,19 @@ inline float lerp(float a, float b, float fraction)
 	return (a * (1.0 - fraction)) + (b * fraction);
 }
 
+inline float smooth(float a, float b, float dt)
+{
+	float diff = b - a;
+
+	if (diff > dt)
+		return a + dt;
+
+	if (diff < -dt)
+		return a - dt;
+
+	return b;
+}
+
 //clamping between min and max
 template <typename T>
 T clamp(const T& n, const T& lower, const T& upper) {
@@ -65,6 +79,33 @@ inline std::vector<float> sortBubble(std::vector<float> vector, int length)
 		}
 	}
 	return vector;
+}
+
+//returns random value
+inline int randRange(int min, int max)
+{
+	std::random_device randDevice;
+	std::mt19937_64 generator(randDevice());
+	std::uniform_int_distribution<int> dist(min, max);
+	return dist(randDevice);
+}
+inline float randRangeF(float min, float max)
+{
+	std::random_device randDevice;
+	std::mt19937_64 generator(randDevice());
+	std::uniform_real_distribution<float> dist(min, max);
+	return dist(randDevice);
+}
+
+//returns random element of vector
+template <class T>
+inline T randPick(std::vector<T> vector)
+{
+	if (vector.size() > 0)
+	{
+		int r = randRange(0, vector.size() - 1);
+		return vector[r];
+	}
 }
 
 #endif

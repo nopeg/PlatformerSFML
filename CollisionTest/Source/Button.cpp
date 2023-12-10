@@ -97,7 +97,7 @@ bool Button::updateHold(Vector2f mousePos, Event* event)
     if ((shape.getGlobalBounds().contains(mousePos) || 
         text.getGlobalBounds().contains(mousePos)) && active == true)
     {
-        if (event->type == Event::MouseButtonPressed)
+        if (event->type == Event::MouseButtonPressed && event->mouseButton.button == Mouse::Left)
         {
             countHold++;
             if (countValue < time - 1)

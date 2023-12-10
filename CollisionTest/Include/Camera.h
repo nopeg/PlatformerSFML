@@ -6,10 +6,10 @@ class Camera
 private:
 	float viewZoom = 1.0;
 	float zoomSpeed = 0.05;
-	float zoomMax = 0.6;
+	float zoomMax = 2;
 	Vector2f posDist;
 	float posAngle = 0.0;
-	float camSpeed = 1;
+	float speed = 0.5;
 
 public:
 	bool canZoom = false;
@@ -17,7 +17,7 @@ public:
 	CircleShape shape;
 
 	void set(RenderWindow* window, Vector2f pos);
-	void update(Vector2f pos, Vector2f prevPos);
+	void move(Vector2f pos, Vector2f prevPos);
 	void updateWindow(RenderWindow* window);
 	void updateEvent(Event* gameEvent);
 

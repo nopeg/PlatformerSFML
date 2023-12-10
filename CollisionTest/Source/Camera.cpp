@@ -5,8 +5,8 @@ void Camera::set(RenderWindow* window, Vector2f pos)
 {
 	viewZoom = 1;
 	mainView.zoom(1);
-	mainView.setSize({ 
-		static_cast<float>(window->getSize().x), 
+	mainView.setSize({
+		static_cast<float>(window->getSize().x),
 		static_cast<float>(window->getSize().y) });
 
 	shape.setRadius(4);
@@ -15,13 +15,13 @@ void Camera::set(RenderWindow* window, Vector2f pos)
 	shape.setPosition(pos);
 }
 
-void Camera::update(Vector2f pos, Vector2f prevPos)
+void Camera::move(Vector2f prevPos, Vector2f newPos)
 {
-	posDist.x = distance({ pos.x, 0 }, { prevPos.x, 0 });
-	posDist.y = distance({ 0, pos.y }, { 0, prevPos.y });
-	posAngle = angle(pos, prevPos);
+	posDist.x = distance({ newPos.x, 0 }, { prevPos.x, 0 });
+	posDist.y = distance({ 0, newPos.y }, { 0, prevPos.y });
+	posAngle = angle(newPos, prevPos);
 
-	shape.move(pos - prevPos);
+	shape.move((newPos - prevPos) * speed);
 }
 
 
@@ -39,10 +39,10 @@ void Camera::updateEvent(Event* gameEvent)
 	{
 		viewZoom = 1;
 		mainView.zoom(1);
-		Vector2f viewSize = 
-		{ 
-			static_cast<float>(gameEvent->size.width), 
-			static_cast<float>(gameEvent->size.height) 
+		Vector2f viewSize =
+		{
+			static_cast<float>(gameEvent->size.width),
+			static_cast<float>(gameEvent->size.height)
 		};
 		mainView.setSize(viewSize);
 	}

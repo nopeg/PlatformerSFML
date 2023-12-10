@@ -1,25 +1,33 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Entity.h"
+
 class Player
 {
 private:
-	float frict = 0.0;
-	Vector2f input2f;
-
-	void move(const float& dt, Vector2f dir);
-	void checkInput();
+	float speed = 0.0f;
+	float jump = 0.0f;
+	bool left = false;
+	bool right = false;
+	bool canJump = false;
+	float airTime = 0.0f;
+	UniGrid* unigrid;
 
 public:
-	float speed = 260;
-	float friction = 1.1; //should be higher than 1
-	RectangleShape shape;
+	Entity* body;
+	float nSpeed = 800;
+	float aSpeed = nSpeed / 2;
+	float jumpHeight = 180;
+	float coyotte = 0.3;
+	float accel = 1000.0f;
+	float jaccel = 1500.0f;
 
 	Player();
-	Player(Vector2f size, Vector2f position);
+	Player(UniGrid& ugrid, Vector2f size, Vector2f position);
 
-	void set(Vector2f size, Vector2f position);
-	void update(const float& dt);
+	void set(UniGrid& ugrid, Vector2f size, Vector2f position);
+	void update(const float& dt, UniGrid& ugrid);
 };
 
 #endif

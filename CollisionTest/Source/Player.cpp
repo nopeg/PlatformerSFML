@@ -2,65 +2,102 @@
 #include "Player.h"
 
 Player::Player() {}
-Player::Player(Vector2f size, Vector2f position)
+Player::Player(UniGrid& ugrid, Vector2f size, Vector2f position)
 {
-	set(size, position);
+	set(ugrid, size, position);
 }
 
-void Player::set(Vector2f size, Vector2f position)
+void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position)
 {
-	shape.setOrigin(Vector2f(size.x / 2, size.y / 2));
-	shape.setSize(size);
-	shape.setPosition(position);
+	body = new Entity(ugrid, position);
+	body->checkCell(ugrid);
+	body->mass = 120;
+	body->friction = 1.2f;
+	body->id = 100000;
+	body->setOrigin(Vector2f(size.x / 2, size.y / 2));
+	body->setSize(size);
+	body->setPosition(position);
+
+	body->weight = body->mass * gravity;
 }
 
-void Player::move(const float& dt, Vector2f dir)
+void Player::update(const float& dt, UniGrid& ugrid)
 {
-	shape.move(dir * dt * speed * frict);
-}
+	if (body->onGround)
+	{
+		speed = nSpeed;
+		airTime = 0;
+	}
+	else
+	{
+		speed = aSpeed;
+	}
 
-void Player::checkInput()
-{
+	if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Space))
+	{
+		if (canJump)
+		{
+			if (jump > -jumpHeight)
+			{
+				jump = smooth(jump, -jumpHeight, dt * jaccel);
+			}
+			else
+			{
+				canJump = false;
+				jump = 0;
+			}
+		}
+	}
+	else
+	{
+		if (body->onGround)
+		{
+			canJump = true;
+		}
+		else
+		{
+			if (airTime < coyotte)
+			{
+				airTime = smooth(airTime, coyotte, dt);
+			}
+			else
+			{
+				canJump = false;
+			}
+		}
+		jump = 0;
+	}
+
+	float velGoal;
 	if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::Left))
 	{
-		input2f.x = -1.0;
-		frict = 1;
+		velGoal = -speed;
+		left = true;
 	}
+	else
+	{
+		left = false;
+	}
+
 	if (Keyboard::isKeyPressed(Keyboard::D) || Keyboard::isKeyPressed(Keyboard::Right))
 	{
-		input2f.x = 1.0;
-		frict = 1;
+		velGoal = speed;
+		right = true;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up))
+	else
 	{
-		input2f.y = -1.0;
-		frict = 1;
+		right = false;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::Down))
+
+	if ((left && right) || (!left && !right))
 	{
-		input2f.y = 1.0;
-		frict = 1;
-	}
-}
-
-void Player::update(const float& dt)
-{
-	if (frict <= 0.005)
-	{
-		input2f.x = 0.0;
-		input2f.y = 0.0;
-		frict = 0;
+		velGoal = 0;
 	}
 
-	checkInput();
+	body->velocity.x = smooth(body->velocity.x, velGoal, dt * accel);
+	body->velocity.y = body->weight + jump * dt * accel;
 
-	if (sqrt(input2f.x * input2f.x + input2f.y * input2f.y) > 1.0)
-	{
-		input2f.x /= std::sqrt(2.0);
-		input2f.y /= std::sqrt(2.0);
-	}
+	body->checkCollision(ugrid, dt);
 
-	frict /= friction;
-
-	move(dt, input2f);
+	body->move(body->velocity * dt);
 }

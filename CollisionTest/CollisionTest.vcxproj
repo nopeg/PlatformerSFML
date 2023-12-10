@@ -164,14 +164,17 @@
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\UniformGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\Button.h" />
     <ClInclude Include="Include\Camera.h" />
     <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\Entity.h" />
     <ClInclude Include="Include\Game.h" />
     <ClInclude Include="Include\Menu.h" />
     <ClInclude Include="Include\NewShapes.h" />

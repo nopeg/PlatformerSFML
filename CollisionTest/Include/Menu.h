@@ -21,7 +21,7 @@ public:
 	{
 		print("entered menu");
 
-		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/}
+		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
 		if (!button.loadFromFile("Resources/images/button.png")) { /*error*/ }
 
 		this->cam.canZoom = false;

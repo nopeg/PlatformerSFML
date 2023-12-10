@@ -8,14 +8,15 @@
 class Game : public Scene
 {
 private:
+	UniGrid ugrid;
+
 	RectangleShape background;
 
+	Font fontPixel;
 	Player player;
+	Camera cam;
 
-	std::vector<std::vector<int>> uniGrid;
-	float cellSize = 64.0f;
-	unsigned int height = 8;
-	unsigned int width = 8;
+	std::vector<Entity*> entities;
 
 public:
 
@@ -24,23 +25,29 @@ public:
 	{
 		print("entered game");
 
+		ugrid.createGrid();
+
 		this->cam.canZoom = true;
-		this->cam.set(window, { 0, 0 });
+		this->cam.set(window, { 100, 0 });
 
 		background.setPosition({ 0, 0 });
 		background.setFillColor(Color(100, 100, 100));
 		background.setSize(windowSize);
 
+		Entity* body1 = new Entity(ugrid, { 0, 2160 });
+		body1->setSize({ 2160,32 });
+		body1->checkCell(ugrid);
+		entities.push_back(body1);
 
-		for (int i = 0; i < height; i++)
+		for (int i = 0; i < 10; i++)
 		{
-			for (int j = 0; j < width; j++)
-			{
-				uniGrid.push_back({ i,j });
-			}
+			Entity* bodyi = new Entity(ugrid, { randRangeF(0, ugrid.cellSize * ugrid.width),
+				randRangeF(0, ugrid.cellSize * ugrid.height) });
+			entities.push_back(bodyi);
 		}
 
-		player.set({ 32,32 }, { 0,0 });
+		player.set(ugrid, { 32,64 }, { 0,0 });
+		entities.push_back(player.body);
 	}
 
 	~Game()
@@ -55,28 +62,36 @@ public:
 			goToScene(menu);
 			exitScene();
 		}
-		if (gameEvent->type == sf::Event::MouseButtonPressed)
-		{
 
+		if (gameEvent->type == Event::MouseButtonPressed)
+		{
+			if (gameEvent->mouseButton.button == Mouse::Right)
+			{
+				for (int i = 0; i < ugrid.getBodies(mousePosView).size(); i++)
+				{
+					std::cout << ugrid.getBodies(mousePosView)[i]->id << std::endl;
+				}
+				std::cout << std::endl;
+			}
+
+			if (gameEvent->mouseButton.button == Mouse::Left)
+			{
+				Entity* body = new Entity(ugrid, mousePosView);
+				entities.push_back(body);
+			}
 		}
 	}
 
 	void update(const float& dt)
 	{
 		updateKeybinds(dt);
-		updateMousePosition();
 
-		if (Keyboard::isKeyPressed(Keyboard::Enter))
-		{
-			print(clamp<int>(int(mousePosView.y / cellSize), 0, height - 1) << clamp<int>(int(mousePosView.x / cellSize), 0, width - 1));
-			//print(uniGrid[clamp<int>(int(mousePosView.y / cellSize), 0, height - 1)][clamp<int>(int(mousePosView.x / cellSize), 0, width - 1)]);
-		}
-		player.update(dt);
-
-		cam.update({ 0,0 }, { 0,0 });
-		cam.updateWindow(window);
+		player.update(dt, ugrid);
 		cam.updateEvent(gameEvent);
-		window->setView(cam.mainView);
+		cam.updateWindow(window);
+		cam.move(cam.shape.getPosition(), player.body->getPosition());
+
+		updateMousePosition();
 	}
 
 	void render(RenderTarget* target)
@@ -85,8 +100,11 @@ public:
 			target = this->window;
 
 		target->draw(background);
+		for (size_t i = 0; i < entities.size(); i++)
+		{
+			target->draw(*entities[i]);
+		}
 		target->draw(cam.shape);
-		target->draw(player.shape);
 	}
 };
 
