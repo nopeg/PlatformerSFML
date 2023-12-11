@@ -27,7 +27,7 @@ void Application::startWindow()
 
 void Application::startScenes()
 {
-    SceneStack.push(new TitleScreen(&SceneStack, window, gameEvent, cam));
+    SceneStack.push(new TitleScreen(&SceneStack, window, gameEvent, &cam));
 }
 
 
@@ -88,13 +88,13 @@ void Application::update()
             switch (nextScene)
             {
             case title:
-                SceneStack.push(new TitleScreen(&SceneStack, window, gameEvent, cam));
+                SceneStack.push(new TitleScreen(&SceneStack, window, gameEvent, &cam));
                 break;
             case menu:
-                SceneStack.push(new Menu(&SceneStack, window, gameEvent, cam));
+                SceneStack.push(new Menu(&SceneStack, window, gameEvent, &cam));
                 break;
             case game:
-                SceneStack.push(new Game(&SceneStack, window, gameEvent, cam));
+                SceneStack.push(new Game(&SceneStack, window, gameEvent, &cam));
                 break;
             }
         }

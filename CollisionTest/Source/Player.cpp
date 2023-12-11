@@ -37,9 +37,9 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		if (canJump)
 		{
-			if (jump > -jumpHeight)
+			if (jump < jumpHeight)
 			{
-				jump = smooth(jump, -jumpHeight, dt * jaccel);
+				jump = smooth(jump, jumpHeight, dt * jaccel);
 			}
 			else
 			{
@@ -95,7 +95,7 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	}
 
 	body->velocity.x = smooth(body->velocity.x, velGoal, dt * accel);
-	body->velocity.y = body->weight + jump * dt * accel;
+	body->velocity.y = body->weight - jump * dt * accel;
 
 	body->checkCollision(ugrid, dt);
 

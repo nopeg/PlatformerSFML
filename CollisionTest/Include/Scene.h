@@ -11,7 +11,7 @@ protected:
 	std::stack<Scene*>* SceneStack;
 	RenderWindow* window;
 	Event* gameEvent;
-	Camera cam;
+	Camera* cam;
 
 	Vector2f windowSize;
 	Vector2i mousePosWindow;
@@ -27,7 +27,7 @@ public:
 	virtual void update(const float& dt) = 0;
 	virtual void render(RenderTarget* target = NULL) = 0;
 
-	Scene(std::stack<Scene*>* SceneStack, RenderWindow* window, Event* gameEvent, Camera cam)
+	Scene(std::stack<Scene*>* SceneStack, RenderWindow* window, Event* gameEvent, Camera* cam)
 	{
 		this->SceneStack = SceneStack;
 		this->window = window;

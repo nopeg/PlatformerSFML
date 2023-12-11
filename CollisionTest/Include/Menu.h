@@ -16,7 +16,7 @@ private:
 	RectangleShape background;
 
 public:
-	Menu(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera cam)
+	Menu(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera* cam)
 		: Scene(Scenes, window, gameEvent, cam)
 	{
 		print("entered menu");
@@ -24,8 +24,8 @@ public:
 		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
 		if (!button.loadFromFile("Resources/images/button.png")) { /*error*/ }
 
-		this->cam.canZoom = false;
-		this->cam.set(window, {windowSize.x / 2, windowSize.y / 2});
+		cam->canZoom = false;
+		cam->set(window, {windowSize.x / 2, windowSize.y / 2});
 
 		startButton.value = false;
 		startButton.set({ windowSize.x / 2, windowSize.y / 2 - 128 }, { 160, 64 });
@@ -90,9 +90,8 @@ public:
 		updateKeybinds(dt);
 		updateMousePosition();
 
-		cam.updateWindow(window);
-		cam.updateEvent(gameEvent);
-		window->setView(cam.mainView);
+		cam->updateWindow(window);
+		cam->updateEvent(gameEvent);
 	}
 
 	void render(RenderTarget* target)

@@ -14,15 +14,15 @@ private:
 	RectangleShape background;
 
 public:
-	TitleScreen(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera cam)
+	TitleScreen(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera* cam)
 		: Scene(Scenes, window, gameEvent, cam)
 	{
 		print("entered title");
 
 		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
 
-		this->cam.canZoom = false;
-		this->cam.set(window, { windowSize.x / 2, windowSize.y / 2 });
+		this->cam->canZoom = false;
+		this->cam->set(window, { windowSize.x / 2, windowSize.y / 2 });
 
 		text = newText({ windowSize.x / 2, windowSize.y / 2 }, arial, "welcome", 32, 2, Color::White, Color::Black);
 
@@ -57,9 +57,8 @@ public:
 		updateKeybinds(dt);
 		updateMousePosition();
 
-		cam.updateWindow(window);
-		cam.updateEvent(gameEvent);
-		window->setView(cam.mainView);
+		cam->updateWindow(window);
+		cam->updateEvent(gameEvent);
 	}
 
 	void render(RenderTarget* target)
