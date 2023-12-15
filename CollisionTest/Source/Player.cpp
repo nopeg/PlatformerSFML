@@ -2,23 +2,25 @@
 #include "Player.h"
 
 Player::Player() {}
-Player::Player(UniGrid& ugrid, Vector2f size, Vector2f position)
+Player::Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
 {
-	set(ugrid, size, position);
+	set(ugrid, size, position, texture, imageCount, switchTime);
 }
 
-void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position)
+void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
 {
 	body = new Entity(ugrid, position);
 	body->checkCell(ugrid);
-	body->mass = 120;
+	body->mass = 5000;
 	body->friction = 1.2f;
 	body->id = 100000;
 	body->setOrigin(Vector2f(size.x / 2, size.y / 2));
 	body->setSize(size);
 	body->setPosition(position);
-
 	body->weight = body->mass * gravity;
+
+	animation.set(texture, imageCount, switchTime);
+	body->setTexture(texture);
 }
 
 void Player::update(const float& dt, UniGrid& ugrid)
@@ -37,9 +39,9 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		if (canJump)
 		{
-			if (jump < jumpHeight)
+			if (jump < 2500)
 			{
-				jump = smooth(jump, jumpHeight, dt * jaccel);
+				jump = smooth(jump, 2500, 10000 * dt);
 			}
 			else
 			{
@@ -94,8 +96,11 @@ void Player::update(const float& dt, UniGrid& ugrid)
 		velGoal = 0;
 	}
 
+	animation.update(0, 0, dt);
+	body->setTextureRect(animation.uvRect);
+
 	body->velocity.x = smooth(body->velocity.x, velGoal, dt * accel);
-	body->velocity.y = body->weight - jump * dt * accel;
+	body->velocity.y = body->weight * dt - jump;
 
 	body->checkCollision(ugrid, dt);
 

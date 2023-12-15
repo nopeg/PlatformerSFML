@@ -19,6 +19,7 @@ private:
 
 	//grid tiles
 	Texture tileTexture;
+	Texture playerTexture;
 	Sprite tileSprite;
 
 public:
@@ -49,7 +50,7 @@ public:
 		tileSprite.setScale(ugrid.cellSize / 32, ugrid.cellSize / 32);
 		tileTexture.setRepeated(true);
 
-		Entity* body1 = new Entity(ugrid, { 0, 160 });
+		Entity* body1 = new Entity(ugrid, { 0, 240 });
 		body1->setSize({ 2160,32 });
 		body1->checkCell(ugrid);
 		entities.push_back(body1);
@@ -61,7 +62,12 @@ public:
 			entities.push_back(bodyi);
 		}
 
-		player.set(ugrid, { 32,64 }, { 0,0 });
+
+		if (!playerTexture.loadFromFile("Resources/Images/player.png"))
+		{
+			// error...
+		}
+		player.set(ugrid, { 32,64 }, { 0,0 }, &playerTexture, Vector2u(3, 1), 0.25f);
 		entities.push_back(player.body);
 	}
 
