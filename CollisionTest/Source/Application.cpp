@@ -112,6 +112,8 @@ void Application::updateEvent()
 {
     while (window->pollEvent(*gameEvent))
     {
+        SceneStack.top()->updateEvent(dt);
+
         if (gameEvent->type == Event::Closed || SceneStack.top()->leftApp)
         {
             delete SceneStack.top();
@@ -120,8 +122,6 @@ void Application::updateEvent()
             print("end game");
             window->close();
         }
-
-        cam.updateEvent(gameEvent);
     }
 }
 

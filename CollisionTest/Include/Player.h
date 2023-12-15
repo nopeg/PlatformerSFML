@@ -14,6 +14,7 @@ private:
 	float airTime = 0.0f;
 	UniGrid* unigrid;
 
+
 public:
 	Entity* body;
 	float nSpeed = 800;

@@ -36,7 +36,7 @@ public:
 		print("left title");
 	}
 
-	void updateKeybinds(const float& dt)
+	void updateEvent(const float& dt)
 	{
 		msec = static_cast<unsigned int>(clock.getElapsedTime().asMilliseconds());
 
@@ -54,7 +54,7 @@ public:
 
 	void update(const float& dt)
 	{
-		updateKeybinds(dt);
+		updateEvent(dt);
 		updateMousePosition();
 
 		cam->updateWindow(window);

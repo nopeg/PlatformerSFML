@@ -57,7 +57,7 @@ public:
 		print("left menu");
 	}
 
-	void updateKeybinds(const float& dt)
+	void updateEvent(const float& dt)
 	{
 		startButton.updateToggle(mousePosView, gameEvent);
 		if (startButton.value == true)
@@ -87,7 +87,7 @@ public:
 
 	void update(const float& dt)
 	{
-		updateKeybinds(dt);
+		updateEvent(dt);
 		updateMousePosition();
 
 		cam->updateWindow(window);

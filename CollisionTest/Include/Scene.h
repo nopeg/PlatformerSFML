@@ -23,7 +23,7 @@ public:
 	bool leftScene = false;
 	sceneName nextScene = none;
 
-	virtual void updateKeybinds(const float& dt) = 0;
+	virtual void updateEvent(const float& dt) = 0;
 	virtual void update(const float& dt) = 0;
 	virtual void render(RenderTarget* target = NULL) = 0;
 

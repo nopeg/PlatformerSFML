@@ -44,8 +44,6 @@ public:
 			// error...
 		}
 		IntRect iBounds(fBounds);
-		float gridSizeF = 32.f;
-		unsigned gridSizeU = static_cast<unsigned>(gridSizeF);
 		tileSprite.setTexture(tileTexture);
 		tileSprite.setTextureRect(iBounds);
 		tileSprite.setScale(ugrid.cellSize / 32, ugrid.cellSize / 32);
@@ -72,7 +70,7 @@ public:
 		print("left game");
 	}
 
-	void updateKeybinds(const float& dt)
+	void updateEvent(const float& dt)
 	{
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
@@ -82,7 +80,7 @@ public:
 
 		if (gameEvent->type == Event::MouseButtonPressed)
 		{
-			if (gameEvent->mouseButton.button == Mouse::Right && rightB)
+			if (gameEvent->mouseButton.button == Mouse::Right)
 			{
 				for (int i = 0; i < ugrid.getBodies(mousePosView).size(); i++)
 				{
@@ -92,37 +90,24 @@ public:
 				rightB = false;
 			}
 
-			if (gameEvent->mouseButton.button == Mouse::Left && leftB)
+			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
 				Entity* body = new Entity(ugrid, mousePosView);
 				entities.push_back(body);
 				leftB = false;
 			}
 		}
-
-		if (gameEvent->type == sf::Event::MouseButtonReleased)
-		{
-			if (gameEvent->mouseButton.button == sf::Mouse::Left)
-			{
-				leftB = true;
-			}
-			if (gameEvent->mouseButton.button == sf::Mouse::Right)
-			{
-				rightB = true;
-			}
-		}
 	}
 
 	void update(const float& dt)
 	{
-		updateKeybinds(dt);
-
 		player.update(dt, ugrid);
 		cam->updateEvent(gameEvent);
 		cam->updateWindow(window);
 		cam->move(cam->shape.getPosition(), player.body->getPosition());
 
 		updateMousePosition();
+		
 	}
 
 	void render(RenderTarget* target)

@@ -161,6 +161,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
@@ -170,10 +172,12 @@
     <ClCompile Include="Source\UniformGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Animation.h" />
     <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\Button.h" />
     <ClInclude Include="Include\Camera.h" />
     <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\Enemy.h" />
     <ClInclude Include="Include\Entity.h" />
     <ClInclude Include="Include\Game.h" />
     <ClInclude Include="Include\Menu.h" />
