@@ -19,8 +19,10 @@ private:
 
 	//grid tiles
 	Texture tileTexture;
+	Texture parallaxTexture;
 	Texture playerTexture;
 	Sprite tileSprite;
+	Sprite parallaxSprite;
 
 public:
 
@@ -34,16 +36,22 @@ public:
 		cam->canZoom = true;
 		cam->set(window, { 100, 0 });
 
-		background.setPosition({ 0, 0 });
-		background.setFillColor(Color(100, 100, 100));
-		background.setSize(windowSize);
+		background.setOrigin(Vector2f(window->getSize()) * 4.0f);
+		background.setFillColor(Color(180, 200, 220));
+		background.setSize(Vector2f(window->getSize()) * 8.0f);
+
+		parallaxSprite.setOrigin(Vector2f(window->getSize()));
+		if (!parallaxTexture.loadFromFile("Resources/Images/clouds.png")) { /*error*/ }
+		FloatRect fBoundsP(0, 0, window->getSize().x * 2.0f, window->getSize().y * 2.0f);
+		IntRect iBoundsP(fBoundsP);
+		parallaxSprite.setTexture(parallaxTexture);
+		parallaxSprite.setTextureRect(iBoundsP);
+		parallaxTexture.setRepeated(true);
+		parallaxSprite.setScale(8, 8);
 
 		//grid tiles
 		FloatRect fBounds(0, 0, 32 * ugrid.width, 32 * ugrid.height);
-		if (!tileTexture.loadFromFile("Resources/Images/Tile1.png"))
-		{
-			// error...
-		}
+		if (!tileTexture.loadFromFile("Resources/Images/Tile1.png")) { /*error*/ }
 		IntRect iBounds(fBounds);
 		tileSprite.setTexture(tileTexture);
 		tileSprite.setTextureRect(iBounds);
@@ -63,10 +71,7 @@ public:
 		}
 
 
-		if (!playerTexture.loadFromFile("Resources/Images/player.png"))
-		{
-			// error...
-		}
+		if (!playerTexture.loadFromFile("Resources/Images/player.png")) { /*error*/ }
 		player.set(ugrid, { 32,64 }, { 0,0 }, &playerTexture, Vector2u(3, 1), 0.25f);
 		entities.push_back(player.body);
 	}
@@ -103,17 +108,18 @@ public:
 				leftB = false;
 			}
 		}
+
+		cam->updateEvent(gameEvent);
 	}
 
 	void update(const float& dt)
 	{
 		player.update(dt, ugrid);
-		cam->updateEvent(gameEvent);
 		cam->updateWindow(window);
 		cam->move(cam->shape.getPosition(), player.body->getPosition());
-
+		background.setPosition(player.body->getPosition());
+		parallaxSprite.setPosition(player.body->getPosition() * 0.2f);
 		updateMousePosition();
-		
 	}
 
 	void render(RenderTarget* target)
@@ -122,6 +128,7 @@ public:
 			target = this->window;
 
 		target->draw(background);
+		target->draw(parallaxSprite);
 		target->draw(tileSprite);
 		for (size_t i = 0; i < entities.size(); i++)
 		{

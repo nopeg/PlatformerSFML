@@ -4,7 +4,7 @@
 //initial functions
 void Application::startWindow()
 {
-    std::ifstream ifs("Resources/files/config/window.ini");
+    std::ifstream ifs("Resources/files/window.ini");
     std::string title = "Title";
     unsigned fLimit = 30;
     bool vSync = false;
