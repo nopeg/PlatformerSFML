@@ -20,15 +20,15 @@ public:
 	Entity* body;
 	float nSpeed = 800;
 	float aSpeed = nSpeed / 3;
-	float jumpHeight = 200;
-	float coyotte = 0.2;
+	float jumpHeight = 2500;
+	float coyotte = 0.05;
 	float accel = 1000.0f;
-	float jaccel = 1000.0f;
+	float jaccel = 10000.0f;
 
 	Player();
-	Player(UniGrid& ugrid, Vector2f size, Vector2f position, sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+	Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 
-	void set(UniGrid& ugrid, Vector2f size, Vector2f position, sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+	void set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 	void update(const float& dt, UniGrid& ugrid);
 };
 

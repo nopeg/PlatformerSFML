@@ -11,8 +11,8 @@ void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* text
 {
 	body = new Entity(ugrid, position);
 	body->checkCell(ugrid);
-	body->mass = 5000;
-	body->friction = 1.2f;
+	body->setOutlineThickness(0);
+	body->mass = 100;
 	body->id = 100000;
 	body->setOrigin(Vector2f(size.x / 2, size.y / 2));
 	body->setSize(size);
@@ -39,9 +39,9 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		if (canJump)
 		{
-			if (jump < 2500)
+			if (jump < body->weight * 29)
 			{
-				jump = smooth(jump, 2500, 10000 * dt);
+				jump = smooth(jump, body->weight * 29, dt * 200000);
 			}
 			else
 			{
@@ -58,7 +58,7 @@ void Player::update(const float& dt, UniGrid& ugrid)
 		}
 		else
 		{
-			if (airTime < coyotte)
+			if (airTime < coyotte && jump == 0)
 			{
 				airTime = smooth(airTime, coyotte, dt);
 			}
@@ -100,7 +100,7 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	body->setTextureRect(animation.uvRect);
 
 	body->velocity.x = smooth(body->velocity.x, velGoal, dt * accel);
-	body->velocity.y = body->weight * dt - jump;
+	body->velocity.y = smooth(body->velocity.y, body->weight - jump, dt * jaccel);
 
 	body->checkCollision(ugrid, dt);
 

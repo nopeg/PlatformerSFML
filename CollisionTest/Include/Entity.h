@@ -9,14 +9,13 @@ class Entity : public RectangleShape
 private:
 	std::vector<Vector2i> cells;
 	std::vector<Vector2i> prevCells;
-	std::vector<Entity*> nearBodies;
 
 public:
 	int id = 0;
 	float mass = 0;
 	float weight = 0;
-	float friction = 1.1f; //should be higher than 1
 	bool onGround = false;
+	std::vector<Entity*> nearBodies;
 	Vector2f velocity;
 
 	Entity();

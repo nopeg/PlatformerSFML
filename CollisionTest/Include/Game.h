@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "UniformGrid.h"
 
 class Game : public Scene
@@ -13,14 +14,14 @@ private:
 	Font fontPixel;
 	Player player;
 	std::vector<Entity*> entities;
-	bool leftB = true;
-	bool rightB = true;
+	std::vector<Enemy> enemies;
 
 
 	//grid tiles
 	Texture tileTexture;
 	Texture parallaxTexture;
 	Texture playerTexture;
+	Texture enemyTexture;
 	Sprite tileSprite;
 	Sprite parallaxSprite;
 
@@ -63,8 +64,22 @@ public:
 		body1->checkCell(ugrid);
 		entities.push_back(body1);
 
+		if (!enemyTexture.loadFromFile("Resources/Images/enemy.png")) { /*error*/ }
+
+		Enemy enemy(ugrid, { 32,32 },
+			{ 0,0 },
+			&enemyTexture, Vector2u(3, 1), 0.25f);
+		entities.push_back(enemy.body);
+		enemies.push_back(enemy);
+
 		for (int i = 0; i < 10; i++)
 		{
+			Enemy enemy(ugrid, { 32,32 }, 
+				{ randRangeF(0, ugrid.cellSize * ugrid.width), randRangeF(0, ugrid.cellSize * ugrid.height) }, 
+				&enemyTexture, Vector2u(3, 1), 0.25f);
+			entities.push_back(enemy.body);
+			enemies.push_back(enemy);
+
 			Entity* bodyi = new Entity(ugrid, { randRangeF(0, ugrid.cellSize * ugrid.width),
 				randRangeF(0, ugrid.cellSize * ugrid.height) });
 			entities.push_back(bodyi);
@@ -93,19 +108,15 @@ public:
 		{
 			if (gameEvent->mouseButton.button == Mouse::Right)
 			{
-				for (int i = 0; i < ugrid.getBodies(mousePosView).size(); i++)
-				{
-					std::cout << ugrid.getBodies(mousePosView)[i]->id << std::endl;
-				}
-				std::cout << std::endl;
-				rightB = false;
+				Enemy enemy(ugrid, { 32,32 }, mousePosView, &enemyTexture, Vector2u(3, 1), 0.25f);
+				entities.push_back(enemy.body);
+				enemies.push_back(enemy);
 			}
 
 			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
 				Entity* body = new Entity(ugrid, mousePosView);
 				entities.push_back(body);
-				leftB = false;
 			}
 		}
 
@@ -115,6 +126,10 @@ public:
 	void update(const float& dt)
 	{
 		player.update(dt, ugrid);
+		for (size_t i = 0; i < enemies.size(); i++)
+		{
+			enemies[i].update(dt, ugrid, player.body);
+		}
 		cam->updateWindow(window);
 		cam->move(cam->shape.getPosition(), player.body->getPosition());
 		background.setPosition(player.body->getPosition());

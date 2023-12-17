@@ -56,6 +56,17 @@ inline float smooth(float a, float b, float dt)
 	return b;
 }
 
+inline Vector2f interpolate(const Vector2f& pointA, const Vector2f& pointB,float factor) 
+{
+	if (factor > 1.f)
+		factor = 1.f;
+
+	else if (factor < 0.f)
+		factor = 0.f;
+
+	return pointA + (pointB - pointA) * factor;
+}
+
 //clamping between min and max
 template <typename T>
 T clamp(const T& n, const T& lower, const T& upper) {
