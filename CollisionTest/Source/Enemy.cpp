@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "Enemy.h"
+#include "Player.h"
 
 Enemy::Enemy() {}
 Enemy::Enemy(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
@@ -29,15 +30,26 @@ void Enemy::moveToPoint(const float& dt, const Vector2f& point)
 	body->move(body->velocity * dt);
 }
 
-void Enemy::update(const float& dt, UniGrid& ugrid, Entity* player)
+void Enemy::update(const float& dt, UniGrid& ugrid, Player* player)
 {
 	animation.update(0, 0, dt);
 	body->setTextureRect(animation.uvRect);
 
-	if (distance(body->getPosition(), player->getPosition()) <= 1000.0f)
+	if (distance(body->getPosition(), player->body->getPosition()) < 1000.0f 
+		&& distance(body->getPosition(), player->body->getPosition()) > 64.0f)
 	{
-		body->velocity.x = smooth(body->velocity.x, -(body->getPosition() - player->getPosition()).x, dt * accel);
-		body->velocity.y = smooth(body->velocity.y, -(body->getPosition() - player->getPosition()).y, dt * accel);
+		body->velocity.x = smooth(body->velocity.x, -(body->getPosition() - player->body->getPosition()).x, dt * accel);
+		body->velocity.y = smooth(body->velocity.y, -(body->getPosition() - player->body->getPosition()).y, dt * accel);
+	}
+	else if (distance(body->getPosition(), player->body->getPosition()) <= 64.0f)
+	{
+		msec = static_cast<unsigned int>(clock.getElapsedTime().asMilliseconds());
+
+		if (msec >= 1000)
+		{
+			player->health -= 10.0f;
+			clock.restart();
+		}
 	}
 	else
 	{

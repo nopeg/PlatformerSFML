@@ -18,6 +18,7 @@ private:
 
 public:
 	Entity* body;
+	float health = 100.0f;
 	float nSpeed = 800;
 	float aSpeed = nSpeed / 3;
 	float jumpHeight = 2500;

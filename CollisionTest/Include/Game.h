@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "UniformGrid.h"
+#include "NewShapes.h"
 
 class Game : public Scene
 {
@@ -16,7 +17,6 @@ private:
 	std::vector<Entity*> entities;
 	std::vector<Enemy> enemies;
 
-
 	//grid tiles
 	Texture tileTexture;
 	Texture parallaxTexture;
@@ -24,6 +24,9 @@ private:
 	Texture enemyTexture;
 	Sprite tileSprite;
 	Sprite parallaxSprite;
+	Font arial;
+
+	Text hp;
 
 public:
 
@@ -36,6 +39,9 @@ public:
 
 		cam->canZoom = true;
 		cam->set(window, { 100, 0 });
+
+		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
+		hp = newText({ 0,0 }, arial, std::to_string(int(player.health)), 32, 2, Color::White, Color::Black);
 
 		background.setOrigin(Vector2f(window->getSize()) * 4.0f);
 		background.setFillColor(Color(180, 200, 220));
@@ -128,13 +134,21 @@ public:
 		player.update(dt, ugrid);
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
-			enemies[i].update(dt, ugrid, player.body);
+			enemies[i].update(dt, ugrid, &player);
 		}
 		cam->updateWindow(window);
 		cam->move(cam->shape.getPosition(), player.body->getPosition());
 		background.setPosition(player.body->getPosition());
 		parallaxSprite.setPosition(player.body->getPosition() * 0.2f);
 		updateMousePosition();
+		hp.setPosition({ window->getView().getCenter().x, window->getView().getCenter().y - window->getSize().y / 2 + 96 });
+		hp.setString(std::to_string(int(player.health)));
+
+		if (player.health <= 0.0f)
+		{
+			goToScene(menu);
+			exitScene();
+		}
 	}
 
 	void render(RenderTarget* target)
@@ -150,6 +164,7 @@ public:
 			target->draw(*entities[i]);
 		}
 		target->draw(cam->shape);
+		target->draw(hp);
 	}
 };
 

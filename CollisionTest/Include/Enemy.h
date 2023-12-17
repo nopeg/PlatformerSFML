@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include "Animation.h"
 
+class Player;
+
 class Enemy
 {
 private:
@@ -12,6 +14,8 @@ private:
 	UniGrid* unigrid;
 	Animation animation;
 	std::vector<Vector2f> goals;
+	Clock clock;
+	int msec;
 
 	void moveToPoint(const float& dt, const Vector2f& point);
 
@@ -22,7 +26,7 @@ public:
 	Enemy(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 
 	void set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
-	void update(const float& dt, UniGrid& ugrid, Entity* player);
+	void update(const float& dt, UniGrid& ugrid, Player* player);
 };
 
 #endif
