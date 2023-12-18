@@ -39,9 +39,9 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		if (canJump)
 		{
-			if (jump < body->weight * 29)
+			if (jump < body->weight * jumpForce)
 			{
-				jump = smooth(jump, body->weight * 29, dt * 200000);
+				jump = smooth(jump, body->weight * jumpForce, dt * jaccel);
 			}
 			else
 			{
@@ -75,6 +75,7 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		velGoal = -speed;
 		left = true;
+		animReverse = 1;
 	}
 	else
 	{
@@ -85,6 +86,7 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	{
 		velGoal = speed;
 		right = true;
+		animReverse = 0;
 	}
 	else
 	{
@@ -94,13 +96,28 @@ void Player::update(const float& dt, UniGrid& ugrid)
 	if ((left && right) || (!left && !right))
 	{
 		velGoal = 0;
+		if (body->onGround)
+		{
+			animation.update(0, animReverse, dt);
+		}
+		else
+		{
+			animation.update(2, animReverse, dt);
+		}
+	}
+	else if(body->onGround)
+	{
+		animation.update(1, animReverse, dt);
+	}
+	else
+	{
+		animation.update(2, animReverse, dt);
 	}
 
-	animation.update(0, 0, dt);
 	body->setTextureRect(animation.uvRect);
 
-	body->velocity.x = smooth(body->velocity.x, velGoal, dt * accel);
-	body->velocity.y = smooth(body->velocity.y, body->weight - jump, dt * jaccel);
+	body->velocity.x = smooth(body->velocity.x, velGoal, dt * haccel);
+	body->velocity.y = smooth(body->velocity.y, body->weight - jump, dt * vaccel);
 
 	body->checkCollision(ugrid, dt);
 

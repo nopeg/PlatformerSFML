@@ -7,22 +7,31 @@
 class Menu : public Scene
 {
 private:
-	Font arial;
-	Texture button;
 	Button startButton;
 	Button optionsButton;
 	Button levelEditorButton;
 	Button exitButton;
 	RectangleShape background;
 
+	Font arial;
+	Texture button;
+	Texture tileTexture;
+	Texture parallaxTexture;
+	Texture playerTexture;
+	Texture enemyTexture;
+
 public:
 	Menu(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera* cam)
 		: Scene(Scenes, window, gameEvent, cam)
 	{
-		print("entered menu");
-
 		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
 		if (!button.loadFromFile("Resources/images/button.png")) { /*error*/ }
+		if (!parallaxTexture.loadFromFile("Resources/Images/clouds.png")) { /*error*/ }
+		if (!tileTexture.loadFromFile("Resources/Images/Tile1.png")) { /*error*/ }
+		if (!enemyTexture.loadFromFile("Resources/Images/enemy.png")) { /*error*/ }
+		if (!playerTexture.loadFromFile("Resources/Images/player.png")) { /*error*/ }
+
+		print("entered menu");
 
 		cam->canZoom = false;
 		cam->set(window, {windowSize.x / 2, windowSize.y / 2});

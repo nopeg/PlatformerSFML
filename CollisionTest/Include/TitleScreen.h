@@ -7,11 +7,17 @@
 class TitleScreen : public Scene
 {
 private:
-	Font arial;
 	Clock clock;
 	int msec;
 	Text text;
 	RectangleShape background;
+
+	Font arial;
+	Texture button;
+	Texture tileTexture;
+	Texture parallaxTexture;
+	Texture playerTexture;
+	Texture enemyTexture;
 
 public:
 	TitleScreen(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera* cam)
@@ -20,6 +26,11 @@ public:
 		print("entered title");
 
 		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
+		if (!button.loadFromFile("Resources/images/button.png")) { /*error*/ }
+		if (!parallaxTexture.loadFromFile("Resources/Images/clouds.png")) { /*error*/ }
+		if (!tileTexture.loadFromFile("Resources/Images/Tile1.png")) { /*error*/ }
+		if (!enemyTexture.loadFromFile("Resources/Images/enemy.png")) { /*error*/ }
+		if (!playerTexture.loadFromFile("Resources/Images/player.png")) { /*error*/ }
 
 		this->cam->canZoom = false;
 		this->cam->set(window, { windowSize.x / 2, windowSize.y / 2 });

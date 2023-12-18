@@ -23,6 +23,7 @@ void Animation::set(Texture* texture, Vector2u imageCount, float switchTime) {
 void Animation::update(int row, bool reverseDirection, float deltaT) {
     currentImage.y = row;
     totalTime += deltaT;
+    this->switchTime = switchTime;
 
     if (totalTime >= switchTime) {
         totalTime -= switchTime;

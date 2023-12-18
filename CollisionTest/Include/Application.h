@@ -20,6 +20,7 @@ private:
 	void startScenes();
 
 public:
+
 	Application();
 	virtual ~Application();
 

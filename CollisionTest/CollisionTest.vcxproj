@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\UniformGrid.cpp" />
+    <ClCompile Include="Source\WorldGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Animation.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Include\Scene.h" />
     <ClInclude Include="Include\TitleScreen.h" />
     <ClInclude Include="Include\UniformGrid.h" />
+    <ClInclude Include="Include\WorldGrid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
