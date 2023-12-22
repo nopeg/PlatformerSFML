@@ -79,12 +79,20 @@ public:
 		if (levelEditorButton.value == true)
 		{
 			print("no editor yet");
+
+			std::string fileName = "Resources/files/world.ini";
+			fileName = "notepad \"" + fileName + "\"";
+			system(fileName.c_str());
 		}
 
 		optionsButton.updateHold(mousePosView, gameEvent);
 		if (optionsButton.value == true)
 		{
 			print("no options yet");
+
+			std::string fileName = "Resources/files/window.ini";
+			fileName = "notepad \"" + fileName + "\"";
+			system(fileName.c_str());
 		}
 
 		exitButton.updateToggle(mousePosView, gameEvent);

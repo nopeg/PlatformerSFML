@@ -22,6 +22,7 @@ private:
 	//grid tiles
 	Sprite tileSprite;
 	Sprite parallaxSprite;
+	RectangleShape point;
 
 	Font arial;
 	Texture button;
@@ -34,6 +35,76 @@ private:
 	Button gridButton;
 
 	View guiView;
+
+	void loadWorld()
+	{
+		std::ifstream ifs("Resources/files/world.ini");
+		std::string line;
+
+		entities.clear();
+		enemies.clear();
+
+
+		if (ifs.is_open())
+		{
+			while (std::getline(ifs, line))
+			{
+				if (!line.empty() && line.find('//') == std::string::npos)
+				{
+					if (line.find("wall") < line.size())
+					{
+						line.erase(0, line.find(" "));
+						std::istringstream ss(line);
+						int v;
+						std::vector<int> data;
+						while (ss >> v)
+						{
+							data.push_back(v);
+						}
+
+						Entity* body1 = new Entity(ugrid, Vector2f(data[0], data[1]), Vector2f(data[2], data[3]));
+						body1->checkCell(ugrid);
+						entities.push_back(body1);
+					}
+
+					if (line.find("player") < line.size())
+					{
+						if (player.body == nullptr)
+						{
+							line.erase(0, line.find(" "));
+							std::istringstream ss(line);
+							float v;
+							std::vector<float> data;
+							while (ss >> v)
+							{
+								data.push_back(v);
+							}
+
+							player.set(ugrid, { 32,64 }, { data[0], data[1] }, &playerTexture, Vector2u(3, 3), 0.3f);
+							entities.push_back(player.body);
+						}
+					}
+
+					if (line.find("enemy") < line.size())
+					{
+						line.erase(0, line.find(" "));
+						std::istringstream ss(line);
+						float v;
+						std::vector<float> data;
+						while (ss >> v)
+						{
+							data.push_back(v);
+						}
+
+						Enemy enemy(ugrid, { 32,32 }, { data[0], data[1] }, &enemyTexture, Vector2u(3, 1), 0.25f);
+						entities.push_back(enemy.body);
+						enemies.push_back(enemy);
+					}
+				}
+			}
+			ifs.close();
+		}
+	}
 
 public:
 
@@ -52,7 +123,11 @@ public:
 		ugrid.createGrid();
 
 		cam->canZoom = true;
-		cam->set(window, { 100, 0 });
+		cam->set(window, { 0, 0 });
+
+		point.setPosition(0, 0);
+		point.setSize(Vector2f(16, 16));
+		point.setFillColor(Color::Red);
 
 		hp = newText({ 0,0 }, arial, std::to_string(int(player.health)), 32, 2, Color::White, Color::Black);
 
@@ -81,38 +156,14 @@ public:
 		tileSprite.setScale(ugrid.cellSize / 32, ugrid.cellSize / 32);
 		tileTexture.setRepeated(true);
 
-		Entity* body1 = new Entity(ugrid, { 0, 240 });
-		body1->setSize({ 2160,32 });
-		body1->checkCell(ugrid);
-		entities.push_back(body1);
-
-		Enemy enemy(ugrid, { 32,32 },
-			{ 0,0 },
-			&enemyTexture, Vector2u(3, 1), 0.25f);
-		entities.push_back(enemy.body);
-		enemies.push_back(enemy);
-
-		for (int i = 0; i < 16; i++)
-		{
-			Enemy enemy(ugrid, { 32,32 }, 
-				{ randRangeF(0, ugrid.cellSize * ugrid.width), randRangeF(0, ugrid.cellSize * ugrid.height) }, 
-				&enemyTexture, Vector2u(3, 1), 0.25f);
-			entities.push_back(enemy.body);
-			enemies.push_back(enemy);
-
-			Entity* bodyi = new Entity(ugrid, { randRangeF(0, ugrid.cellSize * ugrid.width),
-				randRangeF(0, ugrid.cellSize * ugrid.height) });
-			entities.push_back(bodyi);
-		}
-
-		player.set(ugrid, { 32,64 }, { 0,0 }, &playerTexture, Vector2u(3, 3), 0.3f);
-		entities.push_back(player.body);
-
 		guiView.zoom(1);
 		guiView.setSize({
 			static_cast<float>(window->getSize().x),
 			static_cast<float>(window->getSize().y) });
 		guiView.setCenter(0, 0);
+
+
+		loadWorld();
 	}
 
 	~Game()
@@ -139,7 +190,7 @@ public:
 
 			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
-				Entity* body = new Entity(ugrid, mousePosView);
+				Entity* body = new Entity(ugrid, mousePosView, Vector2f(randRangeF(32, 320), randRangeF(32, 320)));
 				entities.push_back(body);
 			}
 		}
@@ -149,22 +200,28 @@ public:
 
 	void update(const float& dt)
 	{
-		player.update(dt, ugrid);
-		for (size_t i = 0; i < enemies.size(); i++)
+		if (player.body != nullptr)
 		{
-			enemies[i].update(dt, ugrid, &player);
-		}
-		cam->move(cam->shape.getPosition(), player.body->getPosition());
-		background.setPosition(player.body->getPosition());
-		parallaxSprite.setPosition(player.body->getPosition() * 0.2f);
+			player.update(dt, ugrid);
 
-		hp.setPosition({ window->getView().getCenter().x, window->getView().getCenter().y - window->getSize().y / 2 + 96 });
-		hp.setString(std::to_string(int(player.health)));
+			cam->move(cam->shape.getPosition(), player.body->getPosition());
+			background.setPosition(player.body->getPosition());
+			parallaxSprite.setPosition(player.body->getPosition() * 0.2f);
 
-		if (player.health <= 0.0f)
-		{
-			goToScene(menu);
-			exitScene();
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				enemies[i].update(dt, ugrid, &player);
+			}
+
+			hp.setPosition({ window->getView().getCenter().x, 
+				window->getView().getCenter().y - window->getSize().y / 2 + 96 });
+			hp.setString(std::to_string(int(player.health)));
+
+			if (player.health <= 0.0f)
+			{
+				goToScene(menu);
+				exitScene();
+			}
 		}
 	}
 
@@ -183,10 +240,15 @@ public:
 		{
 			target->draw(*entities[i]);
 		}
-		target->draw(cam->shape);
+		target->draw(point);
 
-		target->setView(guiView);
-		target->draw(hp);
+		if (player.body != nullptr)
+		{
+			target->draw(cam->shape);
+
+			target->setView(guiView);
+			target->draw(hp);
+		}
 	}
 };
 

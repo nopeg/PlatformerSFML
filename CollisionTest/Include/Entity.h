@@ -19,8 +19,8 @@ public:
 	Vector2f velocity;
 
 	Entity();
-	Entity(UniGrid& ugrid, Vector2f p);
-	void create(UniGrid& ugrid, Vector2f p);
+	Entity(UniGrid& ugrid, Vector2f p, Vector2f s);
+	void create(UniGrid& ugrid, Vector2f p, Vector2f s);
 	std::vector<Vector2f> getPoints();
 	void checkCell(UniGrid& ugrid);
 

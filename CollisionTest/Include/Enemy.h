@@ -17,8 +17,6 @@ private:
 	Clock clock;
 	int msec;
 
-	void moveToPoint(const float& dt, const Vector2f& point);
-
 public:
 	Entity* body;
 

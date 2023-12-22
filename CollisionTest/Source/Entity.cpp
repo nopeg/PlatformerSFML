@@ -2,19 +2,19 @@
 #include "Entity.h"
 
 Entity::Entity() {}
-Entity::Entity(UniGrid& ugrid, Vector2f p)
+Entity::Entity(UniGrid& ugrid, Vector2f p, Vector2f s)
 {
-	create(ugrid, p);
+	create(ugrid, p, s);
 }
 
-void Entity::create(UniGrid& ugrid, Vector2f p)
+void Entity::create(UniGrid& ugrid, Vector2f p, Vector2f s)
 {
 	id = randRange(0, 100);
 	std::cout << "add " << id << std::endl;
 
-	this->setSize(Vector2f(randRangeF(32, 320), randRangeF(32, 320)));
+	this->setSize(s);
 	this->setOrigin(getSize().x / 2, getSize().y / 2);
-	this->setPosition(p.x, p.y);
+	this->setPosition(p);
 	this->setFillColor(Color::White);
 	this->setOutlineThickness(2);
 	this->setOutlineColor(Color::White);

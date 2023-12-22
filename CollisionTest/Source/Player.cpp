@@ -9,18 +9,17 @@ Player::Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* textur
 
 void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
 {
-	body = new Entity(ugrid, position);
+	body = new Entity(ugrid, position, size);
 	body->checkCell(ugrid);
 	body->setOutlineThickness(0);
 	body->mass = 100;
 	body->id = 100000;
-	body->setOrigin(Vector2f(size.x / 2, size.y / 2));
-	body->setSize(size);
-	body->setPosition(position);
 	body->weight = body->mass * gravity;
 
 	animation.set(texture, imageCount, switchTime);
+	animation.update(0, 0, 0);
 	body->setTexture(texture);
+	body->setTextureRect(animation.uvRect);
 }
 
 void Player::update(const float& dt, UniGrid& ugrid)
