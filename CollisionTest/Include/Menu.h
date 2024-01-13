@@ -83,6 +83,7 @@ public:
 			std::string fileName = "Resources/files/world.ini";
 			fileName = "notepad \"" + fileName + "\"";
 			system(fileName.c_str());
+			levelEditorButton.value = false;
 		}
 
 		optionsButton.updateHold(mousePosView, gameEvent);
@@ -93,6 +94,7 @@ public:
 			std::string fileName = "Resources/files/window.ini";
 			fileName = "notepad \"" + fileName + "\"";
 			system(fileName.c_str());
+			optionsButton.value = false;
 		}
 
 		exitButton.updateToggle(mousePosView, gameEvent);

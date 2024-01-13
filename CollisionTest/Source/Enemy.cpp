@@ -41,7 +41,9 @@ void Enemy::update(const float& dt, UniGrid& ugrid, Player* player)
 		if (msec >= 1000)
 		{
 			player->health -= 10.0f;
+			player->body->setFillColor(Color::Red);
 			clock.restart();
+			//player->body->setFillColor(Color::White);
 		}
 	}
 	else

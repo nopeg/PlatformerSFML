@@ -45,9 +45,6 @@
     <ClCompile Include="Source\Enemy.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Source\WorldGrid.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Application.h">
@@ -92,7 +89,13 @@
     <ClInclude Include="Include\Enemy.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Include\WorldGrid.h">
+    <ClInclude Include="Include\Grid.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Node.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Astar.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
