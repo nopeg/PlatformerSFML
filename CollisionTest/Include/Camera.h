@@ -10,6 +10,9 @@ private:
 	Vector2f posDist;
 	float posAngle = 0.0;
 	float speed = 0.5;
+	float rotation = 0.0f;
+
+	Vector2f shakeOffset;
 
 public:
 	bool canZoom = false;
@@ -18,6 +21,8 @@ public:
 
 	void set(RenderWindow* window, Vector2f pos);
 	void move(Vector2f pos, Vector2f prevPos);
+	void randShake(float force);
+	void resetRotation();
 	void updateWindow(RenderWindow* window);
 	void updateEvent(Event* gameEvent);
 

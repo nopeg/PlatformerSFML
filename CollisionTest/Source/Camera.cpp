@@ -5,6 +5,7 @@ void Camera::set(RenderWindow* window, Vector2f pos)
 {
 	viewZoom = 1;
 	mainView.zoom(1);
+	mainView.setRotation(0);
 	mainView.setSize({
 		static_cast<float>(window->getSize().x),
 		static_cast<float>(window->getSize().y) });
@@ -24,11 +25,24 @@ void Camera::move(Vector2f prevPos, Vector2f newPos)
 	shape.move((newPos - prevPos) * speed);
 }
 
+void Camera::randShake(float force)
+{
+	mainView.rotate(randPick<int>({ -1, 1 }) * force);
+	shakeOffset.x += randPick<int>({ -1, 1 }) * force;
+	shakeOffset.y += randPick<int>({ -1, 1 }) * force;
+}
+
+void Camera::resetRotation()
+{
+	mainView.rotate(-1 * mainView.getRotation());
+	shakeOffset = interpolate(shakeOffset, { 0,0 }, 0.8f);
+}
+
 
 void Camera::updateWindow(RenderWindow* window)
 {
 	mainView.setCenter(0, 0);
-	mainView.move(shape.getPosition());
+	mainView.move(shape.getPosition() + shakeOffset);
 	window->setView(mainView);
 }
 
@@ -45,6 +59,7 @@ void Camera::updateEvent(Event* gameEvent)
 			static_cast<float>(gameEvent->size.height)
 		};
 		mainView.setSize(viewSize);
+		mainView.setRotation(rotation);
 	}
 
 	//zoom view mouse wheel

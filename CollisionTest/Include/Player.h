@@ -4,11 +4,14 @@
 #include "Entity.h"
 #include "Animation.h"
 
+class Camera;
+
 class Player
 {
 private:
 	float speed = 0.0f;
 	float jump = 0.0f;
+	bool hurt = false;
 	bool animReverse;
 	bool left = false;
 	bool right = false;
@@ -16,6 +19,9 @@ private:
 	float airTime = 0.0f;
 	UniGrid* unigrid;
 	Animation animation;
+
+	Clock clock;
+	float seconds;
 
 public:
 	Entity* body;
@@ -31,8 +37,9 @@ public:
 	Player();
 	Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 
+	void takeDamage(float damage);
 	void set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
-	void update(const float& dt, UniGrid& ugrid);
+	void update(const float& dt, UniGrid& ugrid, Camera* cam);
 };
 
 #endif

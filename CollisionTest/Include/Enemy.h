@@ -15,7 +15,7 @@ private:
 	Animation animation;
 	std::vector<Vector2f> goals;
 	Clock clock;
-	int msec;
+	int sec;
 
 public:
 	Entity* body;

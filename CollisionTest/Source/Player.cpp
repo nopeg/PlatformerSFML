@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "Camera.h"
 #include "Player.h"
 
 Player::Player() {}
@@ -22,8 +23,32 @@ void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* text
 	body->setTextureRect(animation.uvRect);
 }
 
-void Player::update(const float& dt, UniGrid& ugrid)
+void Player::takeDamage(float damage)
 {
+	clock.restart();
+	hurt = true;
+	this->health -= damage;
+	this->body->setFillColor(Color::Red);
+}
+
+void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
+{
+	if (hurt)
+	{
+		seconds = clock.getElapsedTime().asSeconds();
+
+		if (seconds < 0.1f)
+		{
+			cam->randShake(randRangeF(2, 3));
+		}
+		else
+		{
+			cam->resetRotation();
+			this->body->setFillColor(Color::White);
+			hurt = false;
+		}
+	}
+
 	if (body->onGround)
 	{
 		speed = nSpeed;

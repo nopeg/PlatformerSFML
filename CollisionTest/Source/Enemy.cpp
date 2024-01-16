@@ -36,14 +36,12 @@ void Enemy::update(const float& dt, UniGrid& ugrid, Player* player)
 	}
 	else if (distance(body->getPosition(), player->body->getPosition()) <= 64.0f)
 	{
-		msec = static_cast<unsigned int>(clock.getElapsedTime().asMilliseconds());
+		sec = clock.getElapsedTime().asSeconds();
 
-		if (msec >= 1000)
+		if (sec > 1.5f)
 		{
-			player->health -= 10.0f;
-			player->body->setFillColor(Color::Red);
+			player->takeDamage(randRange(5, 15));
 			clock.restart();
-			//player->body->setFillColor(Color::White);
 		}
 	}
 	else

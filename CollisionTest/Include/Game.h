@@ -162,7 +162,6 @@ public:
 			static_cast<float>(window->getSize().y) });
 		guiView.setCenter(0, 0);
 
-
 		loadWorld();
 	}
 
@@ -200,9 +199,10 @@ public:
 
 	void update(const float& dt)
 	{
+
 		if (player.body != nullptr)
 		{
-			player.update(dt, ugrid);
+			player.update(dt, ugrid, cam);
 
 			cam->move(cam->shape.getPosition(), player.body->getPosition());
 			background.setPosition(player.body->getPosition());
