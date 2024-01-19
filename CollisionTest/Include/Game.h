@@ -8,6 +8,7 @@
 #include "Button.h"
 #include "NewShapes.h"
 
+enum objectType { player, wall, enemy };
 
 class Game : public Scene
 {
@@ -49,62 +50,49 @@ private:
 		{
 			while (std::getline(ifs, line))
 			{
-				if (!line.empty() && line.find('//') == std::string::npos)
+				if (!line.empty())
 				{
-					if (line.find("wall") < line.size())
+					removeChars(line);
+					std::istringstream ss(line);
+					int v;
+					std::vector<int> data;
+					while (ss >> v)
 					{
-						line.erase(0, line.find(" "));
-						std::istringstream ss(line);
-						int v;
-						std::vector<int> data;
-						while (ss >> v)
-						{
-							data.push_back(v);
-						}
-
-						Entity* body1 = new Entity(ugrid, Vector2f(data[0], data[1]), Vector2f(data[2], data[3]));
-						body1->checkCell(ugrid);
-						entities.push_back(body1);
+						data.push_back(v);
 					}
 
-					if (line.find("player") < line.size())
+					switch (data[0])
 					{
-						if (player.body == nullptr)
-						{
-							line.erase(0, line.find(" "));
-							std::istringstream ss(line);
-							float v;
-							std::vector<float> data;
-							while (ss >> v)
-							{
-								data.push_back(v);
-							}
 
-							player.set(ugrid, { 32,64 }, { data[0], data[1] }, &playerTexture, Vector2u(3, 3), 0.3f);
+						case objectType::player:
+						{
+							player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), &playerTexture, Vector2u(3, 3), 0.3f);
 							entities.push_back(player.body);
+							break;
 						}
-					}
 
-					if (line.find("enemy") < line.size())
-					{
-						line.erase(0, line.find(" "));
-						std::istringstream ss(line);
-						float v;
-						std::vector<float> data;
-						while (ss >> v)
+						case objectType::wall:
 						{
-							data.push_back(v);
+							Entity* body1 = new Entity(ugrid, Vector2f(data[1], data[2]), Vector2f(data[3], data[4]));
+							body1->checkCell(ugrid);
+							entities.push_back(body1);
+							break;
 						}
 
-						Enemy enemy(ugrid, { 32,32 }, { data[0], data[1] }, &enemyTexture, Vector2u(3, 1), 0.25f);
-						entities.push_back(enemy.body);
-						enemies.push_back(enemy);
+						case objectType::enemy:
+						{
+							Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), &enemyTexture, Vector2u(3, 1), 0.25f);
+							entities.push_back(enemy.body);
+							enemies.push_back(enemy);
+							break;
+						}
 					}
 				}
 			}
 			ifs.close();
 		}
 	}
+
 
 public:
 

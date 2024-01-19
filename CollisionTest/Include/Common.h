@@ -92,6 +92,16 @@ inline std::vector<float> sortBubble(std::vector<float> vector, int length)
 	return vector;
 }
 
+inline std::string removeChars(std::string& s)
+{
+	s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c)
+		{
+			return !std::isdigit(c) && !std::isspace(c);
+		}), s.end());
+	return s;
+}
+
+
 //returns random value
 inline int randRange(int min, int max)
 {
