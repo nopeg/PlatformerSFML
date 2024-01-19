@@ -10,11 +10,10 @@ Enemy::Enemy(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture,
 
 void Enemy::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
 {
-	body = new Entity(ugrid, position, size);
+	body = new Entity(ugrid, position, size, objectType::enemy);
 	body->checkCell(ugrid);
 	body->setOutlineThickness(0);
 	body->mass = 4500;
-	body->id = 99999;
 	body->weight = body->mass * gravity;
 
 	animation.set(texture, imageCount, switchTime);

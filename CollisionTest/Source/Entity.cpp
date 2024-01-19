@@ -2,14 +2,14 @@
 #include "Entity.h"
 
 Entity::Entity() {}
-Entity::Entity(UniGrid& ugrid, Vector2f p, Vector2f s)
+Entity::Entity(UniGrid& ugrid, Vector2f p, Vector2f s, objectType type)
 {
-	create(ugrid, p, s);
+	create(ugrid, p, s, type);
 }
 
-void Entity::create(UniGrid& ugrid, Vector2f p, Vector2f s)
+void Entity::create(UniGrid& ugrid, Vector2f p, Vector2f s, objectType type)
 {
-	id = randRange(0, 100);
+	id = type;
 	std::cout << "add " << id << std::endl;
 
 	this->setSize(s);

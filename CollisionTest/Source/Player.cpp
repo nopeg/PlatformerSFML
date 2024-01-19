@@ -10,11 +10,10 @@ Player::Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* textur
 
 void Player::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime)
 {
-	body = new Entity(ugrid, position, size);
+	body = new Entity(ugrid, position, size, objectType::player);
 	body->checkCell(ugrid);
 	body->setOutlineThickness(0);
 	body->mass = 100;
-	body->id = 100000;
 	body->weight = body->mass * gravity;
 
 	animation.set(texture, imageCount, switchTime);

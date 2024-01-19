@@ -8,8 +8,6 @@
 #include "Button.h"
 #include "NewShapes.h"
 
-enum objectType { player, wall, enemy };
-
 class Game : public Scene
 {
 private:
@@ -37,6 +35,33 @@ private:
 
 	View guiView;
 
+	void saveWorld(Vector2f playerPos)
+	{
+		std::ofstream ofs("Resources/files/world.ini");
+
+		ofs << objectType::player << " " << int(playerPos.x) << " " << int(playerPos.y) << std::endl << std::endl;
+
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			ofs << objectType::enemy << " " << int(enemies[i].body->getPosition().x)
+				<< " " << int(enemies[i].body->getPosition().y) << std::endl;
+		}
+		ofs << std::endl;
+
+		for (int i = 0; i < entities.size(); i++)
+		{
+			if (entities[i]->id == objectType::wall)
+			{
+				ofs << objectType::wall << " " 
+					<< int(entities[i]->getPosition().x) << " " << int(entities[i]->getPosition().y) << " " 
+					<< int(entities[i]->getSize().x) << " " << int(entities[i]->getSize().y) << std::endl;
+			}
+		}
+		ofs << std::endl;
+
+		ofs.close();
+	}
+
 	void loadWorld()
 	{
 		std::ifstream ifs("Resources/files/world.ini");
@@ -45,8 +70,7 @@ private:
 		entities.clear();
 		enemies.clear();
 
-
-		if (ifs.is_open())
+		if (ifs)
 		{
 			while (std::getline(ifs, line))
 			{
@@ -60,37 +84,46 @@ private:
 					{
 						data.push_back(v);
 					}
-
-					switch (data[0])
+					if (data.size() != 0)
 					{
+						switch (data[0])
+						{
+						case objectType::wall:
+							if (data.size() == 5)
+							{
+								Entity* wall = new Entity(ugrid, Vector2f(data[1], data[2]), Vector2f(data[3], data[4]), objectType::wall);
+								entities.push_back(wall);
+							}
+							break;
 
 						case objectType::player:
-						{
-							player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), &playerTexture, Vector2u(3, 3), 0.3f);
-							entities.push_back(player.body);
+							if (data.size() == 3)
+							{
+								player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), &playerTexture, Vector2u(3, 3), 0.3f);
+								entities.push_back(player.body);
+							}
 							break;
-						}
-
-						case objectType::wall:
-						{
-							Entity* body1 = new Entity(ugrid, Vector2f(data[1], data[2]), Vector2f(data[3], data[4]));
-							body1->checkCell(ugrid);
-							entities.push_back(body1);
-							break;
-						}
 
 						case objectType::enemy:
-						{
-							Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), &enemyTexture, Vector2u(3, 1), 0.25f);
-							entities.push_back(enemy.body);
-							enemies.push_back(enemy);
+							if (data.size() == 3)
+							{
+								Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), &enemyTexture, Vector2u(3, 1), 0.25f);
+								entities.push_back(enemy.body);
+								enemies.push_back(enemy);
+							}
 							break;
 						}
 					}
 				}
 			}
-			ifs.close();
 		}
+		else
+		{
+			saveWorld(Vector2f(0, 0));
+			loadWorld();
+		}
+
+		ifs.close();
 	}
 
 
@@ -120,7 +153,8 @@ public:
 		hp = newText({ 0,0 }, arial, std::to_string(int(player.health)), 32, 2, Color::White, Color::Black);
 
 		gridButton.value = false;
-		gridButton.set({ window->getView().getCenter().x, window->getView().getCenter().y - window->getSize().y / 2 + 96 }, { 160, 64 });
+		gridButton.set({ window->getView().getCenter().x, 
+			window->getView().getCenter().y - window->getSize().y / 2 + 96 }, { 160, 64 });
 		gridButton.setTexture(button);
 		gridButton.setText(arial, "grid");
 
@@ -166,6 +200,12 @@ public:
 			exitScene();
 		}
 
+		if (Keyboard::isKeyPressed(Keyboard::Z))
+		{
+			saveWorld(Vector2f(128, 0));
+			std::cout << "saving world" << std::endl;
+		}
+
 		if (gameEvent->type == Event::MouseButtonPressed)
 		{
 			if (gameEvent->mouseButton.button == Mouse::Right)
@@ -174,11 +214,11 @@ public:
 				entities.push_back(enemy.body);
 				enemies.push_back(enemy);
 			}
-
 			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
-				Entity* body = new Entity(ugrid, mousePosView, Vector2f(randRangeF(32, 320), randRangeF(32, 320)));
-				entities.push_back(body);
+				Entity* wall = new Entity(ugrid, mousePosView, 
+					Vector2f(randRangeF(32, 320), randRangeF(32, 320)), objectType::wall);
+				entities.push_back(wall);
 			}
 		}
 

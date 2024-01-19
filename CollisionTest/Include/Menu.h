@@ -20,6 +20,24 @@ private:
 	Texture playerTexture;
 	Texture enemyTexture;
 
+	void openFile(std::string name)
+	{
+		std::ifstream ifs(name);
+		std::ofstream ofs;
+		if (ifs)
+		{
+			name = "notepad \"" + name + "\"";
+			system(name.c_str());
+			levelEditorButton.value = false;
+			ofs.close();
+			ifs.close();
+		}
+		else
+		{
+			ofs.open(name);
+		}
+	}
+
 public:
 	Menu(std::stack<Scene*>* Scenes, RenderWindow* window, Event* gameEvent, Camera* cam)
 		: Scene(Scenes, window, gameEvent, cam)
@@ -80,10 +98,7 @@ public:
 		{
 			print("no editor yet");
 
-			std::string fileName = "Resources/files/world.ini";
-			fileName = "notepad \"" + fileName + "\"";
-			system(fileName.c_str());
-			levelEditorButton.value = false;
+			openFile("Resources/files/world.ini");
 		}
 
 		optionsButton.updateHold(mousePosView, gameEvent);
@@ -91,10 +106,7 @@ public:
 		{
 			print("no options yet");
 
-			std::string fileName = "Resources/files/window.ini";
-			fileName = "notepad \"" + fileName + "\"";
-			system(fileName.c_str());
-			optionsButton.value = false;
+			openFile("Resources/files/window.ini");
 		}
 
 		exitButton.updateToggle(mousePosView, gameEvent);

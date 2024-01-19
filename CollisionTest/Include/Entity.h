@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include "UniformGrid.h"
 
+enum objectType { wall , player, enemy };
+
 class Entity : public RectangleShape
 {
 private:
@@ -11,7 +13,7 @@ private:
 	std::vector<Vector2i> prevCells;
 
 public:
-	int id = 0;
+	objectType id = objectType::wall;
 	float mass = 0;
 	float weight = 0;
 	bool onGround = false;
@@ -19,8 +21,8 @@ public:
 	Vector2f velocity;
 
 	Entity();
-	Entity(UniGrid& ugrid, Vector2f p, Vector2f s);
-	void create(UniGrid& ugrid, Vector2f p, Vector2f s);
+	Entity(UniGrid& ugrid, Vector2f p, Vector2f s, objectType type);
+	void create(UniGrid& ugrid, Vector2f p, Vector2f s, objectType type);
 	std::vector<Vector2f> getPoints();
 	void checkCell(UniGrid& ugrid);
 
