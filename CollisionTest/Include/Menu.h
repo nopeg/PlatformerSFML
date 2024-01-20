@@ -96,7 +96,7 @@ public:
 		levelEditorButton.updateHold(mousePosView, gameEvent);
 		if (levelEditorButton.value == true)
 		{
-			print("no editor yet");
+			print("no proper editor yet");
 
 			openFile("Resources/files/world.ini");
 		}
@@ -104,7 +104,7 @@ public:
 		optionsButton.updateHold(mousePosView, gameEvent);
 		if (optionsButton.value == true)
 		{
-			print("no options yet");
+			print("no proper options yet");
 
 			openFile("Resources/files/window.ini");
 		}

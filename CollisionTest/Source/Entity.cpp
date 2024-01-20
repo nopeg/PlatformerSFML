@@ -84,12 +84,14 @@ bool Entity::checkCollision(UniGrid& ugrid, const float& dt)
 	checkCell(ugrid);
 	Vector2f n;
 	float t;
+	onObject = -1;
 	onGround = false;
 	for (int i = 0; i < nearBodies.size(); i++)
 	{
 		if (rectangleCollision(this, *nearBodies[i], n, dt, t))
 		{
 			resolveCollision(this, nearBodies[i], dt);
+			onObject = nearBodies[i]->id;
 			if (n.y == -1)
 			{
 				onGround = true;

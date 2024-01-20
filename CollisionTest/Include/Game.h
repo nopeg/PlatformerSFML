@@ -32,6 +32,7 @@ private:
 
 	Text hp;
 	Button gridButton;
+	objectType inventory = objectType::wall;
 
 	View guiView;
 
@@ -54,6 +55,13 @@ private:
 			{
 				ofs << objectType::wall << " " 
 					<< int(entities[i]->getPosition().x) << " " << int(entities[i]->getPosition().y) << " " 
+					<< int(entities[i]->getSize().x) << " " << int(entities[i]->getSize().y) << std::endl;
+			}
+
+			if (entities[i]->id == objectType::spikes)
+			{
+				ofs << objectType::spikes << " "
+					<< int(entities[i]->getPosition().x) << " " << int(entities[i]->getPosition().y) << " "
 					<< int(entities[i]->getSize().x) << " " << int(entities[i]->getSize().y) << std::endl;
 			}
 		}
@@ -91,15 +99,28 @@ private:
 						case objectType::wall:
 							if (data.size() == 5)
 							{
-								Entity* wall = new Entity(ugrid, Vector2f(data[1], data[2]), Vector2f(data[3], data[4]), objectType::wall);
+								Entity* wall = new Entity(ugrid, Vector2f(data[1], data[2]), 
+									Vector2f(data[3], data[4]), objectType::wall);
 								entities.push_back(wall);
+							}
+							break;
+
+						case objectType::spikes:
+							if (data.size() >= 3)
+							{
+								Entity* spikes = new Entity(ugrid, Vector2f(data[1], data[2]),
+									Vector2f(data[3], data[4]), objectType::spikes);
+								spikes->setFillColor(Color::Red);
+								spikes->setOutlineThickness(0);
+								entities.push_back(spikes);
 							}
 							break;
 
 						case objectType::player:
 							if (data.size() == 3)
 							{
-								player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), &playerTexture, Vector2u(3, 3), 0.3f);
+								player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), 
+									&playerTexture, Vector2u(3, 3), 0.3f);
 								entities.push_back(player.body);
 							}
 							break;
@@ -107,7 +128,8 @@ private:
 						case objectType::enemy:
 							if (data.size() == 3)
 							{
-								Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), &enemyTexture, Vector2u(3, 1), 0.25f);
+								Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), 
+									&enemyTexture, Vector2u(3, 1), 0.25f);
 								entities.push_back(enemy.body);
 								enemies.push_back(enemy);
 							}
@@ -206,19 +228,51 @@ public:
 			std::cout << "saving world" << std::endl;
 		}
 
+		if (Keyboard::isKeyPressed(Keyboard::Num1))
+		{
+			inventory = objectType::wall;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Num2))
+		{
+			inventory = objectType::spikes;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Num3))
+		{
+			inventory = objectType::enemy;
+		}
+
 		if (gameEvent->type == Event::MouseButtonPressed)
 		{
 			if (gameEvent->mouseButton.button == Mouse::Right)
 			{
-				Enemy enemy(ugrid, { 32,32 }, mousePosView, &enemyTexture, Vector2u(3, 1), 0.25f);
-				entities.push_back(enemy.body);
-				enemies.push_back(enemy);
+				if (inventory == objectType::wall)
+				{
+					Entity* wall = new Entity(ugrid, mousePosView,
+						Vector2f(randRangeF(32, 320), randRangeF(32, 320)), objectType::wall);
+					entities.push_back(wall);
+				}
+
+				if (inventory == objectType::spikes)
+				{
+					Entity* spikes = new Entity(ugrid, mousePosView,
+						Vector2f(32, 32), objectType::spikes);
+					spikes->setFillColor(Color::Red);
+					spikes->setOutlineThickness(0);
+					entities.push_back(spikes);
+				}
+
+				if (inventory == objectType::enemy)
+				{
+					Enemy enemy(ugrid, { 32,32 }, mousePosView, &enemyTexture, Vector2u(3, 1), 0.25f);
+					entities.push_back(enemy.body);
+					enemies.push_back(enemy);
+				}
 			}
 			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
-				Entity* wall = new Entity(ugrid, mousePosView, 
+				/*Entity* wall = new Entity(ugrid, mousePosView, 
 					Vector2f(randRangeF(32, 320), randRangeF(32, 320)), objectType::wall);
-				entities.push_back(wall);
+				entities.push_back(wall);*/
 			}
 		}
 

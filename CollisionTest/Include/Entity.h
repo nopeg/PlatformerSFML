@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "UniformGrid.h"
 
-enum objectType { wall , player, enemy };
+enum objectType { wall, spikes, player, enemy };
 
 class Entity : public RectangleShape
 {
@@ -16,6 +16,7 @@ public:
 	objectType id = objectType::wall;
 	float mass = 0;
 	float weight = 0;
+	int onObject = -1;
 	bool onGround = false;
 	std::vector<Entity*> nearBodies;
 	Vector2f velocity;

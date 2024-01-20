@@ -10,6 +10,7 @@ class Player
 {
 private:
 	float speed = 0.0f;
+	bool ground = false;
 	float jump = 0.0f;
 	bool hurt = false;
 	bool animReverse;

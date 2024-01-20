@@ -50,8 +50,16 @@ void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
 
 	if (body->onGround)
 	{
-		speed = nSpeed;
-		airTime = 0;
+		if (body->onObject == objectType::wall || body->onObject == objectType::enemy)
+		{
+			speed = nSpeed;
+			airTime = 0;
+			ground = true;
+		}
+		else if (body->onObject == objectType::spikes)
+		{
+			takeDamage(100);
+		}
 	}
 	else
 	{
@@ -75,7 +83,7 @@ void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
 	}
 	else
 	{
-		if (body->onGround)
+		if (ground)
 		{
 			canJump = true;
 		}
@@ -119,7 +127,7 @@ void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
 	if ((left && right) || (!left && !right))
 	{
 		velGoal = 0;
-		if (body->onGround)
+		if (ground)
 		{
 			animation.update(0, animReverse, dt);
 		}
@@ -128,7 +136,7 @@ void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
 			animation.update(2, animReverse, dt);
 		}
 	}
-	else if(body->onGround)
+	else if (ground)
 	{
 		animation.update(1, animReverse, dt);
 	}
