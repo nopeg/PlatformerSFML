@@ -6,10 +6,13 @@
 
 class Player;
 
+enum state { sleep, chase, attack, retreat, death };
 class Enemy
 {
 private:
+	state currentState = state::sleep;
 	float speed = 0.1f;
+	bool canFly = true;
 	float accel = 1000.0f;
 	UniGrid* unigrid;
 	Animation animation;

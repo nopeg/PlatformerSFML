@@ -91,6 +91,7 @@ private:
 					while (ss >> v)
 					{
 						data.push_back(v);
+						//std::cout << v << std::endl;
 					}
 					if (data.size() != 0)
 					{
@@ -106,8 +107,9 @@ private:
 							break;
 
 						case objectType::spikes:
-							if (data.size() >= 3)
+							if (data.size() == 5)
 							{
+								
 								Entity* spikes = new Entity(ugrid, Vector2f(data[1], data[2]),
 									Vector2f(data[3], data[4]), objectType::spikes);
 								spikes->setFillColor(Color::Red);
@@ -170,7 +172,7 @@ public:
 
 		point.setPosition(0, 0);
 		point.setSize(Vector2f(16, 16));
-		point.setFillColor(Color::Red);
+		point.setFillColor(Color::Green);
 
 		hp = newText({ 0,0 }, arial, std::to_string(int(player.health)), 32, 2, Color::White, Color::Black);
 

@@ -94,10 +94,13 @@ inline std::vector<float> sortBubble(std::vector<float> vector, int length)
 
 inline std::string removeChars(std::string& s)
 {
-	s.erase(std::remove_if(s.begin(), s.end(), [](unsigned char c)
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (!std::isdigit(s[i]) && !std::isspace(s[i]) && s[i] != '-')
 		{
-			return !std::isdigit(c) && !std::isspace(c);
-		}), s.end());
+			s.erase(i);
+		}
+	}
 	return s;
 }
 
