@@ -26,6 +26,7 @@ public:
 	Enemy();
 	Enemy(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 
+	void die();
 	void set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 	void update(const float& dt, UniGrid& ugrid, Player* player);
 };

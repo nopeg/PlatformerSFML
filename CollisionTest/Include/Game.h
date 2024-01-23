@@ -245,7 +245,7 @@ public:
 
 		if (gameEvent->type == Event::MouseButtonPressed)
 		{
-			if (gameEvent->mouseButton.button == Mouse::Right)
+			if (gameEvent->mouseButton.button == Mouse::Left)
 			{
 				if (inventory == objectType::wall)
 				{
@@ -270,11 +270,27 @@ public:
 					enemies.push_back(enemy);
 				}
 			}
-			if (gameEvent->mouseButton.button == Mouse::Left)
+
+			if (gameEvent->mouseButton.button == Mouse::Right)
 			{
-				/*Entity* wall = new Entity(ugrid, mousePosView, 
-					Vector2f(randRangeF(32, 320), randRangeF(32, 320)), objectType::wall);
-				entities.push_back(wall);*/
+				/*if (enemies.size() > 0)
+				{
+					for (int i = 0; i < enemies.size(); i++)
+					{
+						if (enemies[i].body->getGlobalBounds().contains(mousePosView))
+						{
+							enemies.erase(enemies.begin() + i);
+							for (int j = 0; j < entities.size(); j++)
+							{
+								if (entities[j] == enemies[i].body)
+								{
+									entities.erase(entities.begin() + j);
+								}
+							}
+							enemies[i].die();
+						}
+					}
+				}*/
 			}
 		}
 

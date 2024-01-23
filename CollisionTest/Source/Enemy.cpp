@@ -22,6 +22,11 @@ void Enemy::set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* textu
 	body->setTextureRect(animation.uvRect);
 }
 
+void Enemy::die()
+{
+	delete body;
+}
+
 void Enemy::update(const float& dt, UniGrid& ugrid, Player* player)
 {
 	animation.update(0, 0, dt);
@@ -29,8 +34,14 @@ void Enemy::update(const float& dt, UniGrid& ugrid, Player* player)
 
 	if (body->onObject == objectType::spikes && canFly)
 	{
+		clock.restart();
 		body->velocity *= 0.0f;
 		canFly = false;
+		sec = clock.getElapsedTime().asSeconds();
+		if (sec > 1.5f)
+		{
+			die();
+		}
 	}
 
 	if (body->onObject == objectType::wall)

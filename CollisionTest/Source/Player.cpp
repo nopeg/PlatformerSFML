@@ -63,6 +63,7 @@ void Player::update(const float& dt, UniGrid& ugrid, Camera* cam)
 	}
 	else
 	{
+		ground = false;
 		speed = aSpeed;
 	}
 
