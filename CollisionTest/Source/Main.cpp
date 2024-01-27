@@ -1,10 +1,12 @@
 ﻿#include "Common.h"
 #include "Application.h"
 
+//главная функция программы
 int main()
 {
-    print("start");
+    std::cout << "start" << std::endl;
 
+    //создаем приложение и запускаем его
     Application game;
     game.run();
 

@@ -1,7 +1,7 @@
 #include "Common.h"
-#include <iostream>
 #include "UniformGrid.h"
 
+//создаем решетку
 void UniGrid::createGrid()
 {
 	grid.resize(height);
@@ -11,6 +11,7 @@ void UniGrid::createGrid()
 	}
 }
 
+//получаем локальные координаты €чейки в сетке из глобальных координат в мире
 Vector2i UniGrid::getCell(const Vector2f& coords)
 {
 	int y = clamp<int>(int(coords.y / cellSize), 0, height - 1);
@@ -18,6 +19,7 @@ Vector2i UniGrid::getCell(const Vector2f& coords)
 	return { x, y };
 }
 
+//локальные координаты нескольких €чеек
 std::vector<Vector2i> UniGrid::getCells(const std::vector<Vector2f>& points)
 {
 	std::vector<Vector2i> vector;
@@ -35,6 +37,7 @@ std::vector<Vector2i> UniGrid::getCells(const std::vector<Vector2f>& points)
 	return vector;
 }
 
+//получаем физические объекты клетки по глобальным координатам
 std::vector<Entity*> UniGrid::getBodies(const Vector2f& coords)
 {
 	std::vector<Entity*> vector;
@@ -45,6 +48,7 @@ std::vector<Entity*> UniGrid::getBodies(const Vector2f& coords)
 	return vector;
 }
 
+//проверка €чейки на содержание опрделенного объекта
 int UniGrid::contains(const Vector2i& coords, Entity* body)
 {
 	int result = -1;
@@ -59,12 +63,14 @@ int UniGrid::contains(const Vector2i& coords, Entity* body)
 	return result;
 }
 
+//добавл€ем люъект в клетку по глобальным координатам
 void UniGrid::add(const Vector2f& coords, Entity* body)
 {
 	if (contains(getCell(coords), body) == -1)
 		grid[getCell(coords).y][getCell(coords).x].push_back(body);
 }
 
+//убираем объект из клетки в локальных координатах
 void UniGrid::remove(const Vector2i& coords, Entity* body)
 {
 	int b = contains(coords, body);

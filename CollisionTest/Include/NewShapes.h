@@ -1,13 +1,15 @@
 #ifndef SHAPES_H
 #define SHAPES_H
+//сборник функций для упрощенного создания примитивных фигур SFML
 
+//константы цветов для кнопок
 static Color colorOn = Color(255, 0, 0, 255);
 static Color colorOff = Color(255, 255, 255, 255);
 static Color colorEnterOff = Color(200, 200, 200, 255);
 static Color colorEnterOn = Color(200, 0, 0, 255);
 static Color colorDisabled = Color(100, 100, 100, 255);
 
-//rectangles
+//создание линии в одну строчку
 inline RectangleShape newLine(Vector2f pos1, Vector2f pos2, 
     float width, float outlineWidth, Color colorFill, Color outlineColor)
 {
@@ -23,19 +25,22 @@ inline RectangleShape newLine(Vector2f pos1, Vector2f pos2,
     return line;
 }
 
+//создание прямоугольника в одну строчку
 inline RectangleShape newBox(Vector2f bounds, Vector2f pos, 
     float outlineWidth, Color colorFill, Color outlineColor)
 {
     RectangleShape box(bounds);
+
     box.setOrigin({ bounds.x / 2, bounds.y / 2 });
     box.setPosition({ pos.x, pos.y });
     box.setFillColor(colorFill);
     box.setOutlineThickness(outlineWidth);
     box.setOutlineColor(outlineColor);
+
     return box;
 }
 
-//text
+//создание текста в одну строчку
 inline Text newText(Vector2f pos, const Font& font, const std::string& string, 
     unsigned int chsize, float outlineWidth, Color txtColor, Color outlineColor)
 {
@@ -54,7 +59,7 @@ inline Text newText(Vector2f pos, const Font& font, const std::string& string,
     return txt;
 }
 
-//sprite
+//создание спрайта в одну строчку
 inline Sprite newSprite(Texture& texture, Vector2f pos, 
     Vector2f scale, Vector2f origin, Color colorSprite)
 {

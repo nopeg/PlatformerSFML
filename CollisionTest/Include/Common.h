@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
+//сборник функций, используемых во всем проекте
 
+//стандартные библиотеки
 #include <iostream>
 #include <vector>
 #include <stack>
@@ -8,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 
+//SFML
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -15,65 +18,59 @@
 
 using namespace sf;
 
+//константы
 #define gravity 9.8
 #define PI 3.1415926
-#define print(x) std::cout << x << std::endl;
 
-//returns angle between two objects in radians
+//угол между двум€ объектами в радианах
 inline float angle(Vector2f point1, Vector2f point2)
 {
 	return atan2(point1.y - point2.y, point1.x - point2.x);
 }
 
-//returns distance between two objects
+//рассто€ние между двум€ объектами
 inline float distance(Vector2f point1, Vector2f point2)
 {
 	return sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
 }
 
-//returns converted values with min and max limits between each other (for sliders)
+//преобразует данное значение с коэффициентом в заданных пределах (дл€ ползунков)
 inline float convertMinMax(float min1, float max1, float min2, float max2, float pos)
 {
 	return min1 + ((pos - max2) / min2 * (max1 - min1));
 }
 
-//linear interpolation
-inline float lerp(float a, float b, float fraction)
-{
-	return (a * (1.0 - fraction)) + (b * fraction);
-}
-
-inline float smooth(float a, float b, float dt)
+//линейна€ интерпол€ци€
+inline float lerp(float a, float b, float f)
 {
 	float diff = b - a;
 
-	if (diff > dt)
-		return a + dt;
+	if (diff > f)
+		return a + f;
 
-	if (diff < -dt)
-		return a - dt;
+	if (diff < -f)
+		return a - f;
 
 	return b;
 }
-
-inline Vector2f interpolate(const Vector2f& pointA, const Vector2f& pointB,float factor) 
+inline Vector2f lerp2f(const Vector2f& pointA, const Vector2f& pointB, float f) 
 {
-	if (factor > 1.f)
-		factor = 1.f;
+	if (f > 1.f)
+		f = 1.f;
 
-	else if (factor < 0.f)
-		factor = 0.f;
+	else if (f < 0.f)
+		f = 0.f;
 
-	return pointA + (pointB - pointA) * factor;
+	return pointA + (pointB - pointA) * f;
 }
 
-//clamping between min and max
+//ограничение в пределах
 template <typename T>
 T clamp(const T& n, const T& lower, const T& upper) {
 	return std::max(lower, std::min(n, upper));
 }
 
-//returns sorted vector
+//сортировка пузырьком
 inline std::vector<float> sortBubble(std::vector<float> vector, int length)
 {
 	int temp = 0;
@@ -92,6 +89,7 @@ inline std::vector<float> sortBubble(std::vector<float> vector, int length)
 	return vector;
 }
 
+//удаление всех символов из строки кроме цифр и минуса
 inline std::string removeChars(std::string& s)
 {
 	for (int i = 0; i < s.size(); i++)
@@ -105,7 +103,7 @@ inline std::string removeChars(std::string& s)
 }
 
 
-//returns random value
+//генератор случайных чисел
 inline int randRange(int min, int max)
 {
 	std::random_device randDevice;
@@ -121,7 +119,7 @@ inline float randRangeF(float min, float max)
 	return dist(randDevice);
 }
 
-//returns random element of vector
+//выбор случайного элемента из вектора
 template <class T>
 inline T randPick(std::vector<T> vector)
 {

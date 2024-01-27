@@ -1,9 +1,10 @@
 #include "Common.h"
 #include "Application.h"
 
-//initial functions
+//создание окна
 void Application::startWindow()
 {
+    //загрузка настроек окна из файла
     std::ifstream ifs("Resources/files/window.ini");
     std::string title = "Title";
     unsigned fLimit = 30;
@@ -19,31 +20,35 @@ void Application::startWindow()
     }
     ifs.close();
 
+    //создание окна с заданными настройками
     window = new RenderWindow(windowSize, title);
     window->setFramerateLimit(fLimit);
     window->setVerticalSyncEnabled(vSync);
     gameEvent = new Event;
 }
 
+//добавление сцены начального экрана при запуске приложения
 void Application::startScenes()
 {
     SceneStack.push(new TitleScreen(&SceneStack, window, gameEvent, &cam));
 }
 
 
-//constructor
+//конструктор
 Application::Application()
 {
     startWindow();
     startScenes();
 }
 
-//destructor
+//деструктор
 Application::~Application()
 {
+    //удаление указателей
     delete window;
     delete gameEvent;
 
+    //удаление последней сцены
     while (!SceneStack.empty())
     {
         delete SceneStack.top();
@@ -51,33 +56,36 @@ Application::~Application()
     }
 }
 
-//functions
+//обновление приложения
 void Application::run()
 {
     while (window->isOpen())
     {
         updateDelta();
         update();
+        updateEvent();
         render();
     }
 }
 
+//обновление дельта времени (разница времени между кадрами)
 void Application::updateDelta()
 {
     dt = dtClock.restart().asSeconds();
 }
 
+//обновление системы сцен
 void Application::update()
 {
-    updateEvent();
-
     if (!SceneStack.empty())
     {
+        //обновление сцены
         SceneStack.top()->update(dt);
 
-        //when scene changes
+        //когда сцена меняется
         if (SceneStack.top()->nextScene != none)
         {
+            //берем значение переменной nextScene данной сцены и меняем сцену
             sceneName nextScene = SceneStack.top()->nextScene;
             if (SceneStack.top()->leftScene)
             {
@@ -99,7 +107,7 @@ void Application::update()
             }
         }
 
-        //when scene quits
+        //когда выходим из сцены
         else if (SceneStack.top()->leftScene)
         {
             delete SceneStack.top();
@@ -108,28 +116,32 @@ void Application::update()
     }
 }
 
+//обновляем события SFML
 void Application::updateEvent()
 {
     while (window->pollEvent(*gameEvent))
     {
+        //обновляем события сцены
         SceneStack.top()->updateEvent(dt);
 
+        //если окно закрывается завершаем приложение
         if (gameEvent->type == Event::Closed || SceneStack.top()->leftApp)
         {
             delete SceneStack.top();
             SceneStack.pop();
 
-            print("end game");
+            std::cout << "end game" << std::endl;
             window->close();
         }
     }
 }
 
+//отображение графических объектов приложения
 void Application::render()
 {
     window->clear();
 
-    //render stuff
+    //берем объекты данной сцены
     if (!SceneStack.empty())
     {
         SceneStack.top()->render();

@@ -2,27 +2,33 @@
 #include "NewShapes.h"
 #include "Button.h"
 
+//конструкторы
 Button::Button() {}
+//кнопка, как белый квадрат
 Button::Button(Vector2f position, Vector2f bounds)
 {
     set(position, bounds);
 }
+//кнопка с текстурой
 Button::Button(const Texture& texture, Vector2f position, Vector2f bounds)
 {
     set(position, bounds);
     setTexture(texture);
 }
 
+//создание кнопки
 void Button::set(Vector2f position, Vector2f bounds)
 {
     shape = newBox(bounds, position, 0, colorOff, Color::White);
 }
 
+//применение текстуры
 void Button::setTexture(const Texture& texture)
 {
     shape.setTexture(&texture);
 }
 
+//применение текста
 void Button::setText(const Font& font, const std::string& string)
 {
     Vector2f textPos = shape.getPosition();
@@ -30,12 +36,14 @@ void Button::setText(const Font& font, const std::string& string)
     text.setPosition(textPos);
 }
 
+//применение цвета
 void Button::setColor(Color color)
 {
     shape.setFillColor(color);
     text.setFillColor(color);
 }
 
+//обновление кнопки, как переключателя
 bool Button::updateToggle(Vector2f mousePos, Event* event)
 {
     if ((shape.getGlobalBounds().contains(mousePos) || 
@@ -92,6 +100,7 @@ bool Button::updateToggle(Vector2f mousePos, Event* event)
     return value;
 }
 
+//обновление кнопки с удержанием
 bool Button::updateHold(Vector2f mousePos, Event* event)
 {
     if ((shape.getGlobalBounds().contains(mousePos) || 
@@ -99,6 +108,7 @@ bool Button::updateHold(Vector2f mousePos, Event* event)
     {
         if (event->type == Event::MouseButtonPressed && event->mouseButton.button == Mouse::Left)
         {
+
             countHold++;
             if (countValue < time - 1)
             {
@@ -144,6 +154,7 @@ bool Button::updateHold(Vector2f mousePos, Event* event)
     return value;
 }
 
+//отображение кнопки
 void Button::render(RenderTarget* target)
 {
     target->draw(shape);

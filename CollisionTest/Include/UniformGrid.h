@@ -5,16 +5,20 @@
 
 class Entity;
 
+//класс физической сетки, котора€ делит мир на €чейки дл€ устранени€ ненужных вычислений
 class UniGrid
 {
 private:
+	//массив сетки из физических объектов
 	std::vector<std::vector<std::vector<Entity*>>> grid;
 
 public:
+	//параметры сетки
 	float cellSize = 32.0f * 16;
 	unsigned int height = 10;
 	unsigned int width = 10;
 
+	//функции
 	void createGrid();
 	Vector2i getCell(const Vector2f& coords);
 	std::vector<Vector2i> getCells(const std::vector<Vector2f>& points);

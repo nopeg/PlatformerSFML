@@ -5,10 +5,14 @@
 #include "Animation.h"
 
 class Camera;
+//перечисление анимаций
+enum anim { idle, walk, jump };
 
+//класс игрока
 class Player
 {
 private:
+	//переменные
 	float speed = 0.0f;
 	bool ground = false;
 	float jump = 0.0f;
@@ -20,12 +24,13 @@ private:
 	float airTime = 0.0f;
 	UniGrid* unigrid;
 	Animation animation;
-
 	Clock clock;
 	float seconds;
 
 public:
+	//берем объект класса entity, чтобы не наследовать его
 	Entity* body;
+	//параметры игрока
 	float health = 100.0f;
 	float nSpeed = 800;
 	float aSpeed = nSpeed / 3;
@@ -35,9 +40,11 @@ public:
 	float vaccel = 10000.0f;
 	float jaccel = 200000.0f;
 
+	//конструктор
 	Player();
 	Player(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 
+	//функции
 	void takeDamage(float damage);
 	void set(UniGrid& ugrid, Vector2f size, Vector2f position, Texture* texture, Vector2u imageCount, float switchTime);
 	void update(const float& dt, UniGrid& ugrid, Camera* cam);

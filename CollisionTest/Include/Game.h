@@ -1,6 +1,7 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
+//подключаем файлы заголовков
 #include "Scene.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -11,18 +12,21 @@
 class Game : public Scene
 {
 private:
+	//игровые объекты
 	UniGrid ugrid;
-	RectangleShape background;
-	Font fontPixel;
 	Player player;
 	std::vector<Entity*> entities;
 	std::vector<Enemy> enemies;
-
-	//grid tiles
+	objectType inventory = objectType::wall;
+	//объекты GUI
+	View guiView;
+	Text hp;
+	//визуал сцены
 	Sprite tileSprite;
 	Sprite parallaxSprite;
 	RectangleShape point;
-
+	RectangleShape background;
+	//внешние ресурсы
 	Font arial;
 	Texture button;
 	Texture tileTexture;
@@ -30,18 +34,15 @@ private:
 	Texture playerTexture;
 	Texture enemyTexture;
 
-	Text hp;
-	Button gridButton;
-	objectType inventory = objectType::wall;
-
-	View guiView;
-
+	//сохранение мира с позицией игрока
 	void saveWorld(Vector2f playerPos)
 	{
 		std::ofstream ofs("Resources/files/world.ini");
 
+		//сохранение параметров игрока
 		ofs << objectType::player << " " << int(playerPos.x) << " " << int(playerPos.y) << std::endl << std::endl;
 
+		//сохранение параметров врагов
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			ofs << objectType::enemy << " " << int(enemies[i].body->getPosition().x)
@@ -49,8 +50,10 @@ private:
 		}
 		ofs << std::endl;
 
+		//сохранение параметров прочих объектов
 		for (int i = 0; i < entities.size(); i++)
 		{
+			//стены
 			if (entities[i]->id == objectType::wall)
 			{
 				ofs << objectType::wall << " " 
@@ -58,6 +61,7 @@ private:
 					<< int(entities[i]->getSize().x) << " " << int(entities[i]->getSize().y) << std::endl;
 			}
 
+			//шипы
 			if (entities[i]->id == objectType::spikes)
 			{
 				ofs << objectType::spikes << " "
@@ -70,6 +74,7 @@ private:
 		ofs.close();
 	}
 
+	//загрузка мира
 	void loadWorld()
 	{
 		std::ifstream ifs("Resources/files/world.ini");
@@ -80,10 +85,12 @@ private:
 
 		if (ifs)
 		{
+			//чтение по строкам
 			while (std::getline(ifs, line))
 			{
 				if (!line.empty())
 				{
+					//удаление всех символов, кроме цифр и минуса
 					removeChars(line);
 					std::istringstream ss(line);
 					int v;
@@ -91,51 +98,56 @@ private:
 					while (ss >> v)
 					{
 						data.push_back(v);
-						//std::cout << v << std::endl;
 					}
+
+					//загрузка объектов по ID в начале строки
 					if (data.size() != 0)
 					{
 						switch (data[0])
 						{
-						case objectType::wall:
-							if (data.size() == 5)
-							{
-								Entity* wall = new Entity(ugrid, Vector2f(data[1], data[2]), 
-									Vector2f(data[3], data[4]), objectType::wall);
-								entities.push_back(wall);
-							}
-							break;
+							//стены
+							case objectType::wall:
+								if (data.size() == 5)
+								{
+									Entity* wall = new Entity(ugrid, Vector2f(data[1], data[2]), 
+										Vector2f(data[3], data[4]), objectType::wall);
+									entities.push_back(wall);
+								}
+								break;
 
-						case objectType::spikes:
-							if (data.size() == 5)
-							{
+							//шипы
+							case objectType::spikes:
+								if (data.size() == 5)
+								{
 								
-								Entity* spikes = new Entity(ugrid, Vector2f(data[1], data[2]),
-									Vector2f(data[3], data[4]), objectType::spikes);
-								spikes->setFillColor(Color::Red);
-								spikes->setOutlineThickness(0);
-								entities.push_back(spikes);
-							}
-							break;
+									Entity* spikes = new Entity(ugrid, Vector2f(data[1], data[2]),
+										Vector2f(data[3], data[4]), objectType::spikes);
+									spikes->setFillColor(Color::Red);
+									spikes->setOutlineThickness(0);
+									entities.push_back(spikes);
+								}
+								break;
 
-						case objectType::player:
-							if (data.size() == 3)
-							{
-								player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), 
-									&playerTexture, Vector2u(3, 3), 0.3f);
-								entities.push_back(player.body);
-							}
-							break;
+							//игрок
+							case objectType::player:
+								if (data.size() == 3)
+								{
+									player.set(ugrid, { 32,64 }, Vector2f(data[1], data[2]), 
+										&playerTexture, Vector2u(3, 3), 0.3f);
+									entities.push_back(player.body);
+								}
+								break;
 
-						case objectType::enemy:
-							if (data.size() == 3)
-							{
-								Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), 
-									&enemyTexture, Vector2u(3, 1), 0.25f);
-								entities.push_back(enemy.body);
-								enemies.push_back(enemy);
-							}
-							break;
+							//враги
+							case objectType::enemy:
+								if (data.size() == 3)
+								{
+									Enemy enemy(ugrid, { 32,32 }, Vector2f(data[1], data[2]), 
+										&enemyTexture, Vector2u(3, 1), 0.25f);
+									entities.push_back(enemy.body);
+									enemies.push_back(enemy);
+								}
+								break;
 						}
 					}
 				}
@@ -143,6 +155,7 @@ private:
 		}
 		else
 		{
+			//если не удалось открыть файл мира, создаем пустой с координатами игрока
 			saveWorld(Vector2f(0, 0));
 			loadWorld();
 		}
@@ -152,10 +165,11 @@ private:
 
 
 public:
-
+	//конструктор
 	Game(std::stack<Scene*>* Scenes, RenderWindow* window, Event *gameEvent, Camera* cam)
 		: Scene(Scenes, window, gameEvent, cam)
 	{
+		//загружаем ресурсы
 		if (!arial.loadFromFile("Resources/fonts/arial.ttf")) { /*error*/ }
 		if (!button.loadFromFile("Resources/images/button.png")) { /*error*/ }
 		if (!parallaxTexture.loadFromFile("Resources/Images/clouds.png")) { /*error*/ }
@@ -163,29 +177,29 @@ public:
 		if (!enemyTexture.loadFromFile("Resources/Images/enemy.png")) { /*error*/ }
 		if (!playerTexture.loadFromFile("Resources/Images/player.png")) { /*error*/ }
 
-		print("entered game");
+		std::cout << "entered game" << std::endl;
 
+		//создаем решетку физических объектов
 		ugrid.createGrid();
 
+		//настройка камеры
 		cam->canZoom = true;
 		cam->set(window, { 0, 0 });
 
+		//точка в начале координат
 		point.setPosition(0, 0);
 		point.setSize(Vector2f(16, 16));
 		point.setFillColor(Color::Green);
 
+		//текст здоровья игрока
 		hp = newText({ 0,0 }, arial, std::to_string(int(player.health)), 32, 2, Color::White, Color::Black);
 
-		gridButton.value = false;
-		gridButton.set({ window->getView().getCenter().x, 
-			window->getView().getCenter().y - window->getSize().y / 2 + 96 }, { 160, 64 });
-		gridButton.setTexture(button);
-		gridButton.setText(arial, "grid");
-
+		//задний фон
 		background.setOrigin(Vector2f(window->getSize()) * 4.0f);
 		background.setFillColor(Color(180, 200, 220));
 		background.setSize(Vector2f(window->getSize()) * 8.0f);
 
+		//параллаксный фон облаков
 		parallaxSprite.setOrigin(Vector2f(window->getSize()));
 		FloatRect fBoundsP(0, 0, window->getSize().x * 2.0f, window->getSize().y * 2.0f);
 		IntRect iBoundsP(fBoundsP);
@@ -194,7 +208,7 @@ public:
 		parallaxTexture.setRepeated(true);
 		parallaxSprite.setScale(8, 8);
 
-		//grid tiles
+		//отрисовка физической сетки
 		FloatRect fBounds(0, 0, 32 * ugrid.width, 32 * ugrid.height);
 		IntRect iBounds(fBounds);
 		tileSprite.setTexture(tileTexture);
@@ -202,34 +216,40 @@ public:
 		tileSprite.setScale(ugrid.cellSize / 32, ugrid.cellSize / 32);
 		tileTexture.setRepeated(true);
 
+		//полотно элементов GUI
 		guiView.zoom(1);
 		guiView.setSize({
 			static_cast<float>(window->getSize().x),
 			static_cast<float>(window->getSize().y) });
 		guiView.setCenter(0, 0);
 
+		//загружаем мир из файла
 		loadWorld();
 	}
 
 	~Game()
 	{
-		print("left game");
+		std::cout << "left game" << std::endl;
 	}
 
+	//обновление событий
 	void updateEvent(const float& dt)
 	{
+		//выход в меню
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			goToScene(menu);
 			exitScene();
 		}
 
+		//сохранение мира
 		if (Keyboard::isKeyPressed(Keyboard::Z))
 		{
 			saveWorld(Vector2f(128, 0));
 			std::cout << "saving world" << std::endl;
 		}
 
+		//система инвентаря
 		if (Keyboard::isKeyPressed(Keyboard::Num1))
 		{
 			inventory = objectType::wall;
@@ -243,6 +263,7 @@ public:
 			inventory = objectType::enemy;
 		}
 
+		//создание объекта из инвентаря на нажатие мыши
 		if (gameEvent->type == Event::MouseButtonPressed)
 		{
 			if (gameEvent->mouseButton.button == Mouse::Left)
@@ -270,69 +291,52 @@ public:
 					enemies.push_back(enemy);
 				}
 			}
-
-			if (gameEvent->mouseButton.button == Mouse::Right)
-			{
-				/*if (enemies.size() > 0)
-				{
-					for (int i = 0; i < enemies.size(); i++)
-					{
-						if (enemies[i].body->getGlobalBounds().contains(mousePosView))
-						{
-							enemies.erase(enemies.begin() + i);
-							for (int j = 0; j < entities.size(); j++)
-							{
-								if (entities[j] == enemies[i].body)
-								{
-									entities.erase(entities.begin() + j);
-								}
-							}
-							enemies[i].die();
-						}
-					}
-				}*/
-			}
 		}
 
 		cam->updateEvent(gameEvent);
 	}
 
+	//главный цикл игры
 	void update(const float& dt)
 	{
-
+		//если игрок существует в сцене
 		if (player.body != nullptr)
 		{
+			//обновляем игрока и задний фон
 			player.update(dt, ugrid, cam);
-
-			cam->move(cam->shape.getPosition(), player.body->getPosition());
 			background.setPosition(player.body->getPosition());
 			parallaxSprite.setPosition(player.body->getPosition() * 0.2f);
 
+			//обновляем врагов
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
 				enemies[i].update(dt, ugrid, &player);
 			}
 
+			//обновляем текст здоровья
 			hp.setPosition({ window->getView().getCenter().x, 
 				window->getView().getCenter().y - window->getSize().y / 2 + 96 });
 			hp.setString(std::to_string(int(player.health)));
 
+			//при смерти выходим в меню
 			if (player.health <= 0.0f)
 			{
 				goToScene(menu);
 				exitScene();
 			}
 		}
+
+		cam->updateWindow(window);
+		updateMousePosition();
 	}
 
+	//отрисовка
 	void render(RenderTarget* target)
 	{
 		if (!target)
 			target = this->window;
 
-		cam->updateWindow(window);
-		updateMousePosition();
-
+		//объекты мира
 		target->draw(background);
 		target->draw(parallaxSprite);
 		target->draw(tileSprite);
@@ -342,6 +346,7 @@ public:
 		}
 		target->draw(point);
 
+		//GUI
 		if (player.body != nullptr)
 		{
 			target->draw(cam->shape);
